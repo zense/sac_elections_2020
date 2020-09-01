@@ -30,4 +30,4 @@ class Vote(models.Model):
 	time = models.DateTimeField("voted on", default = timezone.now)
 
 	def __str__(self):
-		return f"Vote by {voter} to {voted_candidate}"
+		return f"Vote by {self.voter} to {self.candidate}"
