@@ -16,7 +16,7 @@ def validate_email(email_value):
 		)
 class User(models.Model):
 	batch = models.CharField(max_length = 10) # ex. 'IMT, MT...'
-	userame = models.CharField(max_length = 255, unique = True) # ex. 'IMT2020518 John Doe'
+	username = models.CharField(max_length = 255, unique = True) # ex. 'IMT2020518 John Doe'
 	email = models.EmailField(max_length = 255, unique = True, validators = [validate_email])
 	isCandidate = models.BooleanField(default = False)
 
