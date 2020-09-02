@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from .models import *
 from main.auth_helper import get_sign_in_url, get_token_from_code, store_token, store_user, remove_user_and_token, get_token
 from main.graph_helper import get_user, get_calendar_events
 import dateutil.parser
+from django.http import HttpResponseForbidden
+
 
 # <HomeViewSnippet>
 def home(request):
@@ -23,7 +26,20 @@ def initialize_context(request):
     context['errors'].append(error)
 
   # Check for user in the session
-  context['user'] = request.session.get('user', {'is_authenticated': False})
+  # context['user'] = request.session.get('user', {'is_authenticated': False})
+  if request.session.get('user', False):
+    user = UserProfile.objects.get(id = request.session['user']['uid'])
+    context['user'] = {
+      'name': " ".join(user.username.split(" ")[1:]),
+      'rollno': user.username.split(" ")[0],
+      'batch_programme': user.batch_programme,
+      'batch_year': user.batch_year,
+      'is_authenticated': True,
+    }
+  else:
+    context['user'] = {
+      'is_authenticated': False,
+    }
   return context
 # </InitializeContextSnippet>
 
@@ -81,3 +97,26 @@ def calendar(request):
 
   return render(request, 'main/calendar.html', context)
 # </CalendarViewSnippet>
+
+def vote(request):
+  if not request.session['user']['is_authenticated']:
+    return HttpResponseForbidden()
+  # temporary hardcode for voting
+  votable = {'IMT2019': ['IMT2019'], 'IMT2018': ['IMT2019', 'IMT2018']} # {'voter' : 'candidate'}
+
+
+  user = UserProfile.objects.get(id = request.session['user']['uid'])
+  if not user:
+    return HttpResponseForbidden() # should ideally never reach this state
+
+  context = {}
+  context['user'] = {
+      'name': " ".join(user.username.split(" ")[1:]),
+      'rollno': user.username.split(" ")[0],
+      'batch_programme': user.batch_programme,
+      'batch_year': user.batch_year,
+      'is_authenticated': True,
+    }
+  context['votable'] = votable[user.batch_programme + str(user.batch_year)]
+
+  return render(request, 'main/vote.html', context)
