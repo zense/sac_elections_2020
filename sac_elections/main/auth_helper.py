@@ -3,6 +3,7 @@ import yaml
 from requests_oauthlib import OAuth2Session
 import os
 import time
+from .models import UserProfile
 
 # This is necessary for testing with non-HTTPS localhost
 # Remove this if deploying to production
@@ -56,6 +57,15 @@ def store_user(request, user):
     'email': user['mail'] if (user['mail'] != None) else user['userPrincipalName'],
     'rollno': user['displayName'].split(" ")[0],
   }
+
+  user = UserProfile.findByEmail(request.session['user']['email'])
+  if not user:
+    # create a new user if the email doesn't correspond to an existing user, else do nothing
+    print(request.session['user']['email'])
+    user = UserProfile.createUser(request.session['user']['name'], request.session['user']['email'], False, False)
+    print(user.username)
+    user.save()
+  request.session['user']['uid'] = user.id
 
 # <GetTokenSnippet>
 def get_token(request):

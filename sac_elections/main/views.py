@@ -8,7 +8,6 @@ import dateutil.parser
 # <HomeViewSnippet>
 def home(request):
   context = initialize_context(request)
-
   return render(request, 'main/home.html', context)
 # </HomeViewSnippet>
 
