@@ -24,13 +24,14 @@
             <li class="nav-item">
               <a href="{% url 'home' %}" class="nav-link{% if request.resolver_match.view_name == 'home' %} active{% endif %}">Home</a>
             </li>
+            <li class="nav-item">
+              <a href="{% url 'vote' %}" class="nav-link{% if request.resolver_match.view_name == 'vote' %} active{% endif %}">Vote</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'dashboard' %}" class="nav-link{% if request.resolver_match.view_name == 'dashboard' %} active{% endif %}">Dashboard</a>
+            </li>
           </ul>
           <ul class="navbar-nav justify-content-end">
-            <li class="nav-item">
-              <a class="nav-link" href="https://developer.microsoft.com/graph/docs/concepts/overview" target="_blank">
-                <i class="fas fa-external-link-alt mr-1"></i>Docs
-              </a>
-            </li>
             {% if user.is_authenticated %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">

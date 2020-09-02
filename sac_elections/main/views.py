@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 from .models import *
 from main.auth_helper import get_sign_in_url, get_token_from_code, store_token, store_user, remove_user_and_token, get_token
 from main.graph_helper import get_user, get_calendar_events
@@ -78,26 +79,7 @@ def callback(request):
   return HttpResponseRedirect(reverse('home'))
 # </CallbackViewSnippet>
 
-# <CalendarViewSnippet>
-def calendar(request):
-  context = initialize_context(request)
-
-  token = get_token(request)
-
-  events = get_calendar_events(token)
-
-  if events:
-    # Convert the ISO 8601 date times to a datetime object
-    # This allows the Django template to format the value nicely
-    for event in events['value']:
-      event['start']['dateTime'] = dateutil.parser.parse(event['start']['dateTime'])
-      event['end']['dateTime'] = dateutil.parser.parse(event['end']['dateTime'])
-
-    context['events'] = events['value']
-
-  return render(request, 'main/calendar.html', context)
-# </CalendarViewSnippet>
-
+# @login_required(login_url="/")
 def vote(request):
   if not request.session['user']['is_authenticated']:
     return HttpResponseForbidden()
@@ -120,3 +102,27 @@ def vote(request):
   context['votable'] = votable[user.batch_programme + str(user.batch_year)]
 
   return render(request, 'main/vote.html', context)
+
+
+def dashboard(request):
+
+  #TEMPORARY LIST
+  batches = {'IMT' : [2018, 2019] }
+
+  context = {}
+  context = initialize_context(request)
+  context['candidates'] = {}
+  
+  for program in batches.keys():
+    candidates = UserProfile.objects.filter( batch_programme = program )
+    candidates = candidates.filter( isCandidate = True )
+
+    for year in batches[program]:
+      candidates_1 = candidates.filter( batch_year=year )
+      
+      context['candidates'][str(program) + str(year)] = candidates_1
+
+  # print( context )
+
+  
+  return render(request, 'main/dashboard.html', context)

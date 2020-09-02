@@ -1,0 +1,23 @@
+<!-- <HomeSnippet> -->
+    {% extends "main/layout.html" %}
+    {% block content %}
+    <div>
+      <h1 class="align-center">SAC Election 2020 - Dashboard</h1>
+      <!-- <ul class="list-group"> -->
+          {% for batch, group in candidates.items %}
+          <!-- <li class="list-group"> -->
+            <!-- <li class="list-group-item d-flex justify-content-between align-items-center"> -->
+              <h2>{{batch}}</h2>
+              <ul class="list-group-item">
+                {% for candidate in group %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <p>{{candidate.username}} <span class="badge badge-primary badge-pill">14 Votes</span></p>
+                </li>
+                {% endfor %}
+              </ul>
+          <!-- </li> -->
+          {% endfor %}
+      <!-- </ul> -->
+    </div>
+    {% endblock %}
+    <!-- </HomeSnippet> -->
