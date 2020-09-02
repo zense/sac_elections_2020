@@ -32,6 +32,7 @@ class UserProfile(models.Model):
 	username = models.CharField(max_length = 255, unique = True) # ex. 'IMT2020518 John Doe'
 	email = models.EmailField(max_length = 255, unique = True, validators = [validate_email])
 	isCandidate = models.BooleanField(default = False)
+	isAdmin = models.BooleanField(default = False) #for SAC and 2 of us, to access dashboard
 	hasVoted = models.BooleanField(default = False)
 
 	@staticmethod
