@@ -7,8 +7,38 @@
       <p>Select exactly one candidate to vote. Don't worry if you misclick, there is a confirmation page ahead</p>
         <ul class="list-group">
           {% for candidate in candidates %}
-         <a href="#"><li class="list-group-item">{{candidate}}</li></a>
+            <li class="list-group-item"><input type="radio" name="candidate" value="{{candidate.email}}" id="candidate" onchange="radioOnChange()"><label for="{{candidate}}"></label>  {{candidate}}</li>
           {% endfor %}
-    </div>
+          <form method="post" action="confirmation" id="pollform">
+            {% csrf_token %}
+            <input type="hidden" name="vote" id="votehfield" value="">
+            <input type="button" id="submitVote" onclick="getval()" class="btn btn-primary btn-large col-2" style="margin-top: 2%" value="Next">
+          </form>
+
+          <script type="text/javascript">
+
+            getval = () => {
+              var candidate = document.querySelector('input[name = "candidate"]:checked').value;
+              document.getElementById('votehfield').value = candidate;
+              document.getElementById('pollform').submit();
+            }
+
+            var button = document.getElementById('submitVote');
+
+            var radios = document.getElementsByName('candidate');
+
+            radioOnChange =  () => {
+              if(!document.querySelector('input[name = "candidate"]:checked')){
+                button.disabled = true;
+              }
+              else{
+                button.disabled = false;
+              }
+            };
+            if(!document.querySelector('input[name = "candidate"]:checked')){
+                button.disabled = true;
+              }
+          </script>
+
     {% endblock %}
     <!-- </HomeSnippet> -->

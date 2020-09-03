@@ -11,7 +11,12 @@ urlpatterns = [
   path('callback', views.callback, name='callback'),
   path('vote/', include([
   		path('', views.vote, name='vote'),
-  		path('<category>', views.poll, name='poll'),
+  		path('<category>/', include([
+  				path('', views.poll, name='poll'),
+				path('confirmation', views.confirmation, name='confirmation'),
+  			])),
   	])),
   path('dashboard', views.dashboard, name='dashboard'),
 ]
+
+#path('confirmation', views.confirmation, name='confirmation'),

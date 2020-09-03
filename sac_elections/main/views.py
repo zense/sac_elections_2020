@@ -6,7 +6,7 @@ from .models import *
 from main.auth_helper import get_sign_in_url, get_token_from_code, store_token, store_user, remove_user_and_token, get_token
 from main.graph_helper import get_user, get_calendar_events
 import dateutil.parser
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 
 
 
@@ -20,10 +20,10 @@ def assertNotVoted(user, category):
 def getVotableHash():
   
   MTECH_CANDIDATES = ['MT2020F1', 'MT2020F2', 'MT2020M1', 'MT2020M2']
-  IMTECH_CANDIDATES = ['IMT2019MA', 'IMT2019FE', 'IMT2018MA', 'IMT2018FE']
+  IMTECH_CANDIDATES = ['IMT2019M1', 'IMT2019F1', 'IMT2018M1', 'IMT2018F1']
   # {'voter' : 'candidate'}
   votable = {
-    'IMT2019': ['IMT2019MA', 'IMT2019FE'], 
+    'IMT2019': ['IMT2019M1', 'IMT2019F1'], 
     'IMT2018': IMTECH_CANDIDATES,
     'IMT2017': IMTECH_CANDIDATES,
     'MT2020': MTECH_CANDIDATES,
@@ -186,7 +186,27 @@ def poll(request, category):
 
   # category[:-2] is the batch, category[-2:-1] is the gender
   context = {}
-  candidates = UserProfile.objects.filter(batch = category[:-2], gender = category[-2:-1])
+  candidates = UserProfile.objects.filter(batch = category[:-2], gender = category[-2:-1], isCandidate = True)
   context['candidates'] = candidates
 
   return render(request, 'main/poll.html', context)
+
+def confirmation(request, category):
+  if request.method != 'POST':
+    return render(request, 'http/405.html', {'message': 'Invalid http method for the resource'} ,status = 405)
+  user = requireValidUser(request)
+  assertNotVoted(user, category)
+
+  email = request.POST.get('vote', None)
+  if not email:
+    raise SuspiciousOperation('The request was cancelled')
+
+  candidate = UserProfile.findByEmail(email)
+
+  if not candidate:
+    raise SuspiciousOperation('The request was cancelled')
+
+  context = {}
+  context['candidate'] = candidate
+  context['category'] = category
+  return render(request, 'main/confirm.html', context)

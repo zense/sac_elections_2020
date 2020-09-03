@@ -97,4 +97,5 @@ class Vote(models.Model):
 
 	# make voter and category pair unique
 	class Meta:
-		unique_together = ('voter', 'category')
+		# failsafe model level check for one vote per person
+		unique_together = (('voter', 'category'), ('voter', 'candidate'))

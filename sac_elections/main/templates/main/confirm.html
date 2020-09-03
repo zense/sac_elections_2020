@@ -1,0 +1,13 @@
+<!-- <HomeSnippet> -->
+    {% extends "main/layout.html" %}
+    {% block content %}
+    <div class="jumbotron">
+      <h1>Confirm your vote for categoty: {{category}}</h1>
+        <p>Click 'confirm' if the vote is correct, else click back to cancel the vote</p>
+          <p class="list-group-item">Candidate ID: {{candidate.username}}</p>
+          <p class="list-group-item">Candidate email: {{user.email}}</p>
+          <p class="list-group-item">Candidate batch: {{candidate.batch_programme }}{{candidate.batch_year}}</p>
+          <a href="{% url 'vote' %}" class="btn btn-primary btn-large">Confirm</a>
+    </div>
+    {% endblock %}
+    <!-- </HomeSnippet> -->
