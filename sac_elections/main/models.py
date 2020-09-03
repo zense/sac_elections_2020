@@ -50,6 +50,7 @@ class UserProfile(models.Model):
 	isCandidate = models.BooleanField(default = False)
 	role = models.CharField(max_length=2, choices=ROLES, default=NA) #admin roles
 	gender = models.CharField(max_length = 2, default = "NA") # only for candidates. Use M and F
+	vote_count = models.IntegerField(default=0)
 
 	@staticmethod
 	def findByEmail(email):

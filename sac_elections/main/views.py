@@ -161,7 +161,7 @@ def dashboard(request):
     candidates = candidates.filter( isCandidate = True )
 
     for year in batches[program]:
-      candidates_1 = candidates.filter( batch_year=year )
+      candidates_1 = candidates.filter( batch_year=year ).order_by( '-vote_count' )
       
       context['candidates'][str(program) + str(year)] = candidates_1
 
@@ -216,7 +216,9 @@ def confirmation(request, category):
   else:
     # create and save the vote
     vote = Vote.objects.create(candidate = candidate, voter = user, category = category)
+    candidate_object = UserProfile.objects.get( email = candidate.email )
+    candidate_object.vote_count += 1
+    candidate_object.save()
     vote.save()
 
     return redirect(reverse('vote'))
-
