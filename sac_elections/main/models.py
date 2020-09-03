@@ -60,7 +60,7 @@ class UserProfile(models.Model):
 
 	# take username and get batch
 	@staticmethod
-	def createUser(username, email, isCandidate, hasVoted):
+	def createUser(username, email, isCandidate):
 		roll = username.split(" ")[0]
 		batch = "NOBATCH"
 		year = "0000"
@@ -68,7 +68,7 @@ class UserProfile(models.Model):
 			batch = re.findall("^(IMT|MT|MS|DT|SMT)", roll)[0]
 			year = re.findall("[0-9]{4}", roll)[0]
 		full_batch = batch + str(year)
-		user = UserProfile.objects.create(batch_programme = batch, batch_year = year, batch = full_batch, email = email, username = username, isCandidate = isCandidate, hasVoted = hasVoted )
+		user = UserProfile.objects.create(batch_programme = batch, batch_year = year, batch = full_batch, email = email, username = username, isCandidate = isCandidate )
 		return user
 
 	# save batch from batch programme and batch year

@@ -62,7 +62,7 @@ def store_user(request, user):
   if not user:
     # create a new user if the email doesn't correspond to an existing user, else do nothing
     print(request.session['user']['email'])
-    user = UserProfile.createUser(request.session['user']['name'], request.session['user']['email'], False, False)
+    user = UserProfile.createUser(request.session['user']['name'], request.session['user']['email'], False)
     print(user.username)
     user.save()
   request.session['user']['uid'] = user.id
