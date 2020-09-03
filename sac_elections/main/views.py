@@ -18,7 +18,19 @@ def assertNotVoted(user, category):
 
 # returns the votable dictionary
 def getVotableHash():
-  votable = {'IMT2019': ['IMT2019M', 'IMT2019F'], 'IMT2018': ['IMT2019M', 'IMT2019F', 'IMT2018M', 'IMT2018F']} # {'voter' : 'candidate'}
+  
+  MTECH_CANDIDATES = ['MT2020F1', 'MT2020F2', 'MT2020M1', 'MT2020M2']
+  IMTECH_CANDIDATES = ['IMT2019MA', 'IMT2019FE', 'IMT2018MA', 'IMT2018FE']
+  # {'voter' : 'candidate'}
+  votable = {
+    'IMT2019': ['IMT2019MA', 'IMT2019FE'], 
+    'IMT2018': IMTECH_CANDIDATES,
+    'IMT2017': IMTECH_CANDIDATES,
+    'MT2020': MTECH_CANDIDATES,
+    'DT2020': MTECH_CANDIDATES,
+    'MS2020': MTECH_CANDIDATES,
+    'PH2020': MTECH_CANDIDATES,
+    }
   return votable
 
 def canVoteCategory(user, category):
@@ -129,11 +141,16 @@ def vote(request):
 
 def dashboard(request):
 
+  batches={}
   user = requireValidUser(request)
-  if not user.isAdmin:
+  if user.role == 'NA':
     return render(request, 'http/401.html', {"message": "Only admins can access this page"}, status = 401)
-  #TEMPORARY LIST
-  batches = {'IMT' : [2018, 2019] }
+  if user.role == 'DV':
+    batches = {'IMT' : [2018, 2019], 'MT' : [2020] } #DEV
+  if user.role == 'IM':
+    batches = {'IMT' : [2018, 2019] } #IMTECH SAC
+  if user.role == 'MT':
+    batches = {'MT' : [2020] } #MTECH_SAC
 
   context = {}
   context = initialize_context(request)
@@ -167,9 +184,9 @@ def poll(request, category):
 
   # TODO: handle post here
 
-  # category[:-1] is the batch, category[-1] is the gender
+  # category[:-2] is the batch, category[-2:-1] is the gender
   context = {}
-  candidates = UserProfile.objects.filter(batch = category[:-1], gender = category[-1])
+  candidates = UserProfile.objects.filter(batch = category[:-2], gender = category[-2:-1])
   context['candidates'] = candidates
 
   return render(request, 'main/poll.html', context)

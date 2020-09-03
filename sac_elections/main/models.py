@@ -29,14 +29,26 @@ def validate_batch_year(year):
 		)
 
 class UserProfile(models.Model):
+
+	DEVS = "DV"
+	IMTECHSAC = "IM"
+	MTECHSAC = "MT"
+	NA = "NA"
+	
+	ROLES = [
+		(DEVS, "Developers"),
+		(IMTECHSAC, "iMtech SAC"),
+		(MTECHSAC, "Mtech SAC"),
+		(NA, "Not Applicable"),
+		]
+	
 	batch_programme = models.CharField(max_length = 10, default = "NOBATCH") # ex. 'IMT, MT...'
 	batch_year = models.IntegerField(validators = [validate_batch_year]) # ex. 2019, 2018...
 	batch = models.CharField(max_length = 20, default = "NOBATCH")
 	username = models.CharField(max_length = 255, unique = True) # ex. 'IMT2020518 John Doe'
 	email = models.EmailField(max_length = 255, unique = True, validators = [validate_email])
 	isCandidate = models.BooleanField(default = False)
-	isAdmin = models.BooleanField(default = False) #for SAC and 2 of us, to access dashboard
-	hasVoted = models.BooleanField(default = False)
+	role = models.CharField(max_length=2, choices=ROLES, default=NA) #admin roles
 	gender = models.CharField(max_length = 2, default = "NA") # only for candidates. Use M and F
 
 	@staticmethod
