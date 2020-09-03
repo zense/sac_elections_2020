@@ -1,0 +1,14 @@
+<!-- <HomeSnippet> -->
+    {% extends "main/layout.html" %}
+    {% block content %}
+    <div class="jumbotron">
+      <h1>SAC Election 2020</h1>
+      <h4>Vote a candidate</h4>
+      <p>Select exactly one candidate to vote. Don't worry if you misclick, there is a confirmation page ahead</p>
+        <ul class="list-group">
+          {% for candidate in candidates %}
+         <a href="#"><li class="list-group-item">{{candidate}}</li></a>
+          {% endfor %}
+    </div>
+    {% endblock %}
+    <!-- </HomeSnippet> -->

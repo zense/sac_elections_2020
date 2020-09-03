@@ -6,8 +6,34 @@ from .models import *
 from main.auth_helper import get_sign_in_url, get_token_from_code, store_token, store_user, remove_user_and_token, get_token
 from main.graph_helper import get_user, get_calendar_events
 import dateutil.parser
-from django.http import HttpResponseForbidden
+from django.core.exceptions import PermissionDenied
 
+
+
+# controller level check for unique voting
+def assertNotVoted(user, category):
+  voted = Vote.objects.filter(voter = user, category = category)
+  if voted:
+    raise PermissionDenied("You have already voted for this category")
+
+# returns the votable dictionary
+def getVotableHash():
+  votable = {'IMT2019': ['IMT2019M', 'IMT2019F'], 'IMT2018': ['IMT2019M', 'IMT2019F', 'IMT2018M', 'IMT2018F']} # {'voter' : 'candidate'}
+  return votable
+
+def canVoteCategory(user, category):
+  return category in getVotableHash()[user.batch_programme + str(user.batch_year)]
+
+# Function returns user from session, raises 403 if not found
+def requireValidUser(request):
+  if 'user' not in request.session or 'uid' not in request.session['user']:
+    raise PermissionDenied("You must be logged in to access this page")
+
+  user = UserProfile.objects.filter(id = request.session['user']['uid'])[0]
+  if not user:
+    raise PermissionDenied("You must be logged in to access this page")
+
+  return user
 
 # <HomeViewSnippet>
 def home(request):
@@ -81,15 +107,9 @@ def callback(request):
 
 # @login_required(login_url="/")
 def vote(request):
-  if not request.session['user']['is_authenticated']:
-    return HttpResponseForbidden()
-  # temporary hardcode for voting
-  votable = {'IMT2019': ['IMT2019'], 'IMT2018': ['IMT2019', 'IMT2018']} # {'voter' : 'candidate'}
+  user = requireValidUser(request)
 
-
-  user = UserProfile.objects.get(id = request.session['user']['uid'])
-  if not user:
-    return HttpResponseForbidden() # should ideally never reach this state
+  votable =  getVotableHash()
 
   context = {}
   context['user'] = {
@@ -100,12 +120,18 @@ def vote(request):
       'is_authenticated': True,
     }
   context['votable'] = votable[user.batch_programme + str(user.batch_year)]
+  votes = Vote.objects.filter(voter = user)
+  voted_cats = [ vote.candidate.batch_programme + str(vote.candidate.batch_year) for vote in votes] # voted categories
+  context['voted_cats'] = voted_cats
 
   return render(request, 'main/vote.html', context)
 
 
 def dashboard(request):
 
+  user = requireValidUser(request)
+  if not user.isAdmin:
+    return render(request, 'http/401.html', {"message": "Only admins can access this page"}, status = 401)
   #TEMPORARY LIST
   batches = {'IMT' : [2018, 2019] }
 
@@ -126,3 +152,24 @@ def dashboard(request):
 
   
   return render(request, 'main/dashboard.html', context)
+
+
+def poll(request, category):
+
+  user = requireValidUser(request)
+  votable = getVotableHash()
+  assertNotVoted(user, category)
+
+  # TODO: raise 404 if invalid category
+
+  if not canVoteCategory(user, category):
+    raise PermissionDenied("You are not permitted to vote for this category")
+
+  # TODO: handle post here
+
+  # category[:-1] is the batch, category[-1] is the gender
+  context = {}
+  candidates = UserProfile.objects.filter(batch = category[:-1], gender = category[-1])
+  context['candidates'] = candidates
+
+  return render(request, 'main/poll.html', context)

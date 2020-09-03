@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
@@ -9,6 +9,9 @@ urlpatterns = [
   path('signin', views.sign_in, name='signin'),
   path('signout', views.sign_out, name='signout'),
   path('callback', views.callback, name='callback'),
-  path('vote', views.vote, name='vote'),
+  path('vote', include([
+  		path('/', views.vote, name='vote'),
+  		path('/<category>', views.poll, name='poll'),
+  	])),
   path('dashboard', views.dashboard, name='dashboard'),
 ]

@@ -30,12 +30,14 @@ def validate_batch_year(year):
 
 class UserProfile(models.Model):
 	batch_programme = models.CharField(max_length = 10, default = "NOBATCH") # ex. 'IMT, MT...'
-	batch_year = models.IntegerField(validators = [validate_batch_year])
+	batch_year = models.IntegerField(validators = [validate_batch_year]) # ex. 2019, 2018...
+	batch = models.CharField(max_length = 20, default = "NOBATCH")
 	username = models.CharField(max_length = 255, unique = True) # ex. 'IMT2020518 John Doe'
 	email = models.EmailField(max_length = 255, unique = True, validators = [validate_email])
 	isCandidate = models.BooleanField(default = False)
 	isAdmin = models.BooleanField(default = False) #for SAC and 2 of us, to access dashboard
 	hasVoted = models.BooleanField(default = False)
+	gender = models.CharField(max_length = 2, default = "NA") # only for candidates. Use M and F
 
 	@staticmethod
 	def findByEmail(email):
@@ -53,10 +55,14 @@ class UserProfile(models.Model):
 		if re.match("^(IMT|MT|MS|DT|SMT)[0-9]*$", roll):
 			batch = re.findall("^(IMT|MT|MS|DT|SMT)", roll)[0]
 			year = re.findall("[0-9]{4}", roll)[0]
-
-		user = UserProfile.objects.create(batch_programme = batch, batch_year = year, email = email, username = username, isCandidate = isCandidate, hasVoted = hasVoted )
+		full_batch = batch + str(year)
+		user = UserProfile.objects.create(batch_programme = batch, batch_year = year, batch = full_batch, email = email, username = username, isCandidate = isCandidate, hasVoted = hasVoted )
 		return user
 
+	# save batch from batch programme and batch year
+	def save(self, *args, **kwargs):
+		self.batch = self.batch_programme + str(self.batch_year)
+		super(UserProfile, self).save(*args, **kwargs)
 
 	def __str__(self):
 		return self.username
@@ -66,7 +72,17 @@ class UserProfile(models.Model):
 class Vote(models.Model):
 	candidate = models.ForeignKey(UserProfile, on_delete = models.CASCADE, related_name = "candidate") # candidate voted
 	time = models.DateTimeField("voted on", default = timezone.now)
-	voter = models.OneToOneField(UserProfile, on_delete = models.RESTRICT, related_name = "voter", default = 0) # dont let the user delete after voting
+	voter = models.ForeignKey(UserProfile, on_delete = models.RESTRICT, related_name = "voter", default = 0) # dont let the user delete after voting
+	category = models.CharField(max_length = 20, default = "NOBATCH")
+
+	# override save to default category to candidate's batch
+	def save(self, *args, **kwargs):
+		self.category = self.candidate.batch + self.candidate.gender
+		super(Vote, self).save(*args, **kwargs)
 
 	def __str__(self):
 		return f"Vote by {self.voter} to {self.candidate}"
+
+	# make voter and category pair unique
+	class Meta:
+		unique_together = ('voter', 'category')
