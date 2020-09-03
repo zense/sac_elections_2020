@@ -89,7 +89,8 @@ class Vote(models.Model):
 
 	# override save to default category to candidate's batch
 	def save(self, *args, **kwargs):
-		self.category = self.candidate.batch + self.candidate.gender
+		if not self.category:
+			self.category = self.candidate.batch + self.candidate.gender
 		super(Vote, self).save(*args, **kwargs)
 
 	def __str__(self):

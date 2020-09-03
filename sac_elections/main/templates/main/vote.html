@@ -7,7 +7,7 @@
         <h4>Choose a category</h4>
         <ul class="list-group">
           {% for batch in votable %}
-         <a href="/vote/{{batch}}/"><li class="list-group-item">{{batch}}{% if batch in voted_cats %}<span style="float: right; color: green">Voted</span>{% endif %}</li></a>
+         <a href="/vote/{{batch}}"><li class="list-group-item">{{batch}}{% if batch in voted_cats %}<span style="float: right; color: green">Voted</span>{% endif %}</li></a>
           {% endfor %}
         </ul>
       {% else %}

@@ -2,12 +2,25 @@
     {% extends "main/layout.html" %}
     {% block content %}
     <div class="jumbotron">
-      <h1>Confirm your vote for categoty: {{category}}</h1>
-        <p>Click 'confirm' if the vote is correct, else click back to cancel the vote</p>
+      <h1>Confirm your vote for category: {{category}}</h1>
+        <p>Click 'confirm' if the vote is correct, else click 'back' to cancel the vote</p>
           <p class="list-group-item">Candidate ID: {{candidate.username}}</p>
-          <p class="list-group-item">Candidate email: {{user.email}}</p>
+          <p class="list-group-item">Candidate email: {{candidate.email}}</p>
           <p class="list-group-item">Candidate batch: {{candidate.batch_programme }}{{candidate.batch_year}}</p>
-          <a href="{% url 'vote' %}" class="btn btn-primary btn-large">Confirm</a>
+    
+      <form method="post" action="" id="confirmForm">
+        {% csrf_token %}
+        <input type="hidden" name="vote" value="{{candidate.email}}">
+        <input type="hidden" name="confirm" value="true">
+        <input type="button" id="submitVote" onclick="getval()" class="btn btn-primary btn-large col-2" style="margin-top: 2%" value="Next">
+      </form>
     </div>
+
+    <script type="text/javascript">
+
+      getval = () => {
+        document.getElementById('confirmForm').submit();
+      }
+    </script>
     {% endblock %}
     <!-- </HomeSnippet> -->

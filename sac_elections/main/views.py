@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -206,7 +206,17 @@ def confirmation(request, category):
   if not candidate:
     raise SuspiciousOperation('The request was cancelled')
 
-  context = {}
-  context['candidate'] = candidate
-  context['category'] = category
-  return render(request, 'main/confirm.html', context)
+  # if not after confirmation
+  if not request.POST.get('confirm', False):
+    context = {}
+    context['candidate'] = candidate
+    context['category'] = category
+    return render(request, 'main/confirm.html', context)
+
+  else:
+    # create and save the vote
+    vote = Vote.objects.create(candidate = candidate, voter = user, category = category)
+    vote.save()
+
+    return redirect(reverse('vote'))
+
