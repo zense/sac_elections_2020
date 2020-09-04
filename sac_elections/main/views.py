@@ -9,6 +9,7 @@ import dateutil.parser
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 
 
+## HELPER FUNCTIONS
 
 # controller level check for unique voting
 def assertNotVoted(user, category):
@@ -16,11 +17,16 @@ def assertNotVoted(user, category):
   if voted:
     raise PermissionDenied("You have already voted for this category")
 
+def getCategories():
+  MTECH_CANDIDATES = ['MT2020F1', 'MT2020F2', 'MT2020M1', 'MT2020M2']
+  IMTECH_CANDIDATES = ['IMT2019M1', 'IMT2019F1', 'IMT2018M1', 'IMT2018F1']
+
+  return {'imtech': IMTECH_CANDIDATES, 'mtech': MTECH_CANDIDATES}
 # returns the votable dictionary
 def getVotableHash():
   
-  MTECH_CANDIDATES = ['MT2020F1', 'MT2020F2', 'MT2020M1', 'MT2020M2']
-  IMTECH_CANDIDATES = ['IMT2019M1', 'IMT2019F1', 'IMT2018M1', 'IMT2018F1']
+  MTECH_CANDIDATES = getCategories()['mtech']
+  IMTECH_CANDIDATES = getCategories()['imtech']
   # {'voter' : 'candidate'}
   votable = {
     'IMT2019': ['IMT2019M1', 'IMT2019F1'], 
@@ -32,6 +38,18 @@ def getVotableHash():
     'PH2020': MTECH_CANDIDATES,
     }
   return votable
+
+# What all batches can vote
+def checkBatch(batch):
+  if batch not in getVotableHash().keys():
+    raise PermissionDenied("Sorry, you are not allowed to vote")
+
+# What all categories exist
+def checkCategory(category):
+  MTECH_CANDIDATES = getCategories()['mtech']
+  IMTECH_CANDIDATES = getCategories()['imtech']
+  MTECH_CANDIDATES.extend(IMTECH_CANDIDATES)
+  return category in MTECH_CANDIDATES
 
 def canVoteCategory(user, category):
   return category in getVotableHash()[user.batch_programme + str(user.batch_year)]
@@ -46,6 +64,25 @@ def requireValidUser(request):
     raise PermissionDenied("You must be logged in to access this page")
 
   return user
+
+def getCandidatesWithVoteCount():
+  MTECH_CANDIDATES = getCategories()['mtech']
+  categories = getCategories()['imtech']
+  categories.extend(MTECH_CANDIDATES)
+  votes = {}
+  for category in categories:
+    # TODO: remove hardcode
+    batch = [category[:-2]]
+    if category[:-2] == "MT2020":
+      batch = ['MT2020', 'DT2020', 'MS2020', 'PH2020']
+    candidates = UserProfile.objects.filter(batch__in = batch, isCandidate = True)
+    votes[category[:-2]] = {}
+    for candidate in candidates:
+      votes[category[:-2]][candidate.username] = Vote.objects.filter(candidate = candidate).count() 
+  
+  return votes
+
+## CONTROLLER FUNCTIONS
 
 # <HomeViewSnippet>
 def home(request):
@@ -124,6 +161,8 @@ def vote(request):
   url_query = request.GET.get('m')
   votable =  getVotableHash()
 
+  checkBatch(user.batch)
+    
   context = {}
   context['user'] = {
       'name': " ".join(user.username.split(" ")[1:]),
@@ -155,18 +194,21 @@ def dashboard(request):
   if user.role == 'MT':
     batches = {'MT' : [2020] } #MTECH_SAC
 
-  context = {}
-  context = initialize_context(request)
-  context['candidates'] = {}
-  
-  for program in batches.keys():
-    candidates = UserProfile.objects.filter( batch_programme = program )
-    candidates = candidates.filter( isCandidate = True )
+  print(getCandidatesWithVoteCount())
+  return HttpResponse(200)
 
-    for year in batches[program]:
-      candidates_1 = candidates.filter( batch_year=year ).order_by( '-vote_count' )
+  # context = {}
+  # context = initialize_context(request)
+  # context['candidates'] = {}
+  
+  # for program in batches.keys():
+  #   candidates = UserProfile.objects.filter( batch_programme = program )
+  #   candidates = candidates.filter( isCandidate = True )
+
+  #   for year in batches[program]:
+  #     candidates_1 = candidates.filter( batch_year=year ).order_by( '-vote_count' )
       
-      context['candidates'][str(program) + str(year)] = candidates_1
+  #     context['candidates'][str(program) + str(year)] = candidates_1
 
   # print( context )
 
@@ -180,7 +222,10 @@ def poll(request, category):
   votable = getVotableHash()
   assertNotVoted(user, category)
 
-  # TODO: raise 404 if invalid category
+  checkBatch(user.batch)
+
+  if not checkCategory(category):
+    return render(request, 'http/404.html', {'message': "Invalid voting category"}, status = 404)
 
   if not canVoteCategory(user, category):
     raise PermissionDenied("You are not permitted to vote for this category")
@@ -211,6 +256,15 @@ def confirmation(request, category):
   user = requireValidUser(request)
   assertNotVoted(user, category)
 
+  # legitimacy checks
+  checkBatch(user.batch)
+  if not checkCategory(category):
+    return render(request, 'http/404.html', {'message': "Invalid voting category"}, status = 404)
+
+  if not canVoteCategory(user, category):
+    raise PermissionDenied("You are not permitted to vote for this category")
+
+  # post data checks
   email = request.POST.get('vote', None)
   if not email:
     raise SuspiciousOperation('The request was cancelled')
@@ -219,6 +273,15 @@ def confirmation(request, category):
 
   if not candidate:
     raise SuspiciousOperation('The request was cancelled')
+
+  # Prevent cross category request forgery
+  # TODO: remove hardcode
+  batch = [category[:-2]]
+  if category[:-2] == "MT2020":
+    batch = ['MT2020', 'DT2020', 'MS2020', 'PH2020']
+
+  if candidate.batch not in batch:
+    raise SuspiciousOperation('The request was cancelled due to attempt at request forgery')
 
   # if not after confirmation
   if not request.POST.get('confirm', False):
@@ -239,8 +302,6 @@ def confirmation(request, category):
     # create and save the vote
     vote = Vote.objects.create(candidate = candidate, voter = user, category = category)
     # increment candidate's vote_count, easier for dashboard
-    candidate.vote_count += 1
-    candidate.save()
     vote.save()
 
     # return redirect(reverse('vote', kwargs={'m': "done"}))
