@@ -133,7 +133,7 @@ def vote(request):
       'is_authenticated': True,
       'role': user.role,
     }
-  context['votable'] = votable[user.batch_programme + str(user.batch_year)]
+  context['votable'] = votable[user.batch]
   votes = Vote.objects.filter(voter = user)
   voted_cats = [ vote.category for vote in votes] # voted categories
   context['voted_cats'] = voted_cats
@@ -185,11 +185,14 @@ def poll(request, category):
   if not canVoteCategory(user, category):
     raise PermissionDenied("You are not permitted to vote for this category")
 
-  # TODO: handle post here
-
   # category[:-2] is the batch, category[-2:-1] is the gender
+  # TODO: remove hardcode
   context = {}
-  candidates = UserProfile.objects.filter(batch = category[:-2], gender = category[-2:-1], isCandidate = True)
+  batch = [category[:-2]]
+  # let MS, PH candidates contest for MTECH elections
+  if category[:-2] == "MT2020":
+    batch = ['MT2020', 'DT2020', 'MS2020', 'PH2020']
+  candidates = UserProfile.objects.filter(batch__in = batch, gender = category[-2:-1], isCandidate = True)
   context['candidates'] = candidates
   context['user'] = {
       'name': " ".join(user.username.split(" ")[1:]),
