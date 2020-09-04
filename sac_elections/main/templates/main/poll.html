@@ -12,7 +12,8 @@
           <form method="post" action="confirmation" id="pollform">
             {% csrf_token %}
             <input type="hidden" name="vote" id="votehfield" value="">
-            <input type="button" id="submitVote" onclick="getval()" class="btn btn-primary btn-large col-2" style="margin-top: 2%" value="Next">
+            <input type="button" id="submitVote" onclick="getval()" class="btn btn-primary btn-large col-2" style="margin-top: 2%; float: right;" value="Next">
+            <a href="../" class="btn btn-secondary btn-small" style="margin-top: 2%;">Back</a>
           </form>
 
           <script type="text/javascript">

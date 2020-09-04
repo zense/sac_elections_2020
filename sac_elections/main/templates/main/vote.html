@@ -1,6 +1,13 @@
 <!-- <HomeSnippet> -->
     {% extends "main/layout.html" %}
     {% block content %}
+    {% if q %}
+    <div class="container" style="margin-bottom: 2%">
+      <div class="card">
+        <div class="card-body" style="color: green">{{q}}</div>
+      </div>
+    </div>
+    {% endif %}
     <div class="jumbotron">
       <h1>SAC Election 2020</h1>
       {% if user.is_authenticated %}
@@ -10,6 +17,7 @@
          <a href="/vote/{{batch}}"><li class="list-group-item">{{batch}}{% if batch in voted_cats %}<span style="float: right; color: green">Voted</span>{% endif %}</li></a>
           {% endfor %}
         </ul>
+        <a href="../" class="btn btn-secondary btn-small" style="margin-top: 2%;">Back</a>
       {% else %}
         <a href="{% url 'signin' %}" class="btn btn-primary btn-large">Click here to sign in</a>
       {% endif %}

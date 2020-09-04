@@ -74,6 +74,7 @@ def initialize_context(request):
       'batch_programme': user.batch_programme,
       'batch_year': user.batch_year,
       'is_authenticated': True,
+      'role': user.role,
     }
   else:
     context['user'] = {
@@ -120,7 +121,7 @@ def callback(request):
 # @login_required(login_url="/")
 def vote(request):
   user = requireValidUser(request)
-
+  url_query = request.GET.get('m')
   votable =  getVotableHash()
 
   context = {}
@@ -130,11 +131,13 @@ def vote(request):
       'batch_programme': user.batch_programme,
       'batch_year': user.batch_year,
       'is_authenticated': True,
+      'role': user.role,
     }
   context['votable'] = votable[user.batch_programme + str(user.batch_year)]
   votes = Vote.objects.filter(voter = user)
-  voted_cats = [ vote.candidate.batch_programme + str(vote.candidate.batch_year) for vote in votes] # voted categories
+  voted_cats = [ vote.category for vote in votes] # voted categories
   context['voted_cats'] = voted_cats
+  context['q'] = "Your vote was recorded" if url_query == 'done' else None
 
   return render(request, 'main/vote.html', context)
 
@@ -188,6 +191,14 @@ def poll(request, category):
   context = {}
   candidates = UserProfile.objects.filter(batch = category[:-2], gender = category[-2:-1], isCandidate = True)
   context['candidates'] = candidates
+  context['user'] = {
+      'name': " ".join(user.username.split(" ")[1:]),
+      'rollno': user.username.split(" ")[0],
+      'batch_programme': user.batch_programme,
+      'batch_year': user.batch_year,
+      'is_authenticated': True,
+      'role': user.role,
+    }
 
   return render(request, 'main/poll.html', context)
 
@@ -211,14 +222,23 @@ def confirmation(request, category):
     context = {}
     context['candidate'] = candidate
     context['category'] = category
+    context['user'] = {
+      'name': " ".join(user.username.split(" ")[1:]),
+      'rollno': user.username.split(" ")[0],
+      'batch_programme': user.batch_programme,
+      'batch_year': user.batch_year,
+      'is_authenticated': True,
+      'role': user.role,
+    }
     return render(request, 'main/confirm.html', context)
 
   else:
     # create and save the vote
     vote = Vote.objects.create(candidate = candidate, voter = user, category = category)
-    candidate_object = UserProfile.objects.get( email = candidate.email )
-    candidate_object.vote_count += 1
-    candidate_object.save()
+    # increment candidate's vote_count, easier for dashboard
+    candidate.vote_count += 1
+    candidate.save()
     vote.save()
 
-    return redirect(reverse('vote'))
+    # return redirect(reverse('vote', kwargs={'m': "done"}))
+    return redirect('/vote/?m=done')
