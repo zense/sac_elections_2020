@@ -1,5 +1,5 @@
-app_id: "055cd05b-c16d-4745-a66f-f8c7610ae570"
-app_secret: "i1_81F-3X.-L-kV9II~tw655~KFEnU1DtY" # env in production
+app_id: "e6f8ca14-e399-464f-b98d-b135fe9cf7c1"
+app_secret: "_C99Bnk-o_5ecamr644CNhS-4tOXZ_Jg_1" # env in production
 redirect: "http://localhost:8000/callback" # change host in production
 scopes: "openid profile offline_access user.read calendars.read"
 authority: "https://login.microsoftonline.com/common"
