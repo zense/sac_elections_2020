@@ -238,6 +238,11 @@ def poll(request, category):
   if category[:-2] == "MT2020":
     batch = ['MT2020', 'DT2020', 'MS2020', 'PH2020']
   candidates = UserProfile.objects.filter(batch__in = batch, gender = category[-2:-1], isCandidate = True)
+
+  # don't show the same candidate for M1, M2 kinds of votings 
+  candidates_voted = [ vot.candidate.email for vot in  Vote.objects.filter(voter = user)]
+  candidates = candidates.exclude( email__in = candidates_voted)
+
   context['candidates'] = candidates
   context['user'] = {
       'name': " ".join(user.username.split(" ")[1:]),
