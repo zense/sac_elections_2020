@@ -2,19 +2,24 @@
     {% extends "main/layout.html" %}
     {% block content %}
     <div class="jumbotron">
-      <h1>Confirm your vote for category: {{category}}</h1>
-        <p>Click 'confirm' if the vote is correct, else click 'back' to cancel the vote</p>
-          <p class="list-group-item">Candidate ID: {{candidate.username}}</p>
-          <p class="list-group-item">Candidate email: {{candidate.email}}</p>
-          <p class="list-group-item">Candidate batch: {{candidate.batch_programme }}{{candidate.batch_year}}</p>
-    
-      <form method="post" action="" id="confirmForm">
-        {% csrf_token %}
-        <input type="hidden" name="vote" value="{{candidate.email}}">
-        <input type="hidden" name="confirm" value="true">
-        <input type="button" id="submitVote" onclick="getval()" class="btn btn-primary btn-large col-2 float-right" style="margin-top: 2%" value="Confirm">
-        <a href="../" class="btn btn-secondary btn-small" style="margin-top: 2%;">Back</a>
-      </form>
+      <div class="container">
+        <h3>Confirm your vote</h3>
+          <p>Click <b>Confirm</b> to proceed<br> Click <b>Back</b> to cancel the vote</p>
+            <h5 class="list-group-item"><b>{{categoryName}}</b></h5>
+            <p class="list-group-item"><b>Name:</b> {{candidate.username}}</p>
+            <p class="list-group-item"><b>Batch:</b> {{candidate.batch_programme }}{{candidate.batch_year}}</p>
+      
+        <form method="post" action="" id="confirmForm">
+          {% csrf_token %}
+          <input type="hidden" name="vote" value="{{candidate.email}}">
+          <input type="hidden" name="confirm" value="true">
+
+          <a href="../" class="btn btn-secondary btn-small col-lg-2 col-md-3" style="margin-top: 2%;">Back</a>
+          <input type="button" id="submitVote" onclick="getval()" class="btn btn-success btn-large col-lg-2 col-md-3" style="margin-top: 2%" value="Confirm">
+          
+          <br>
+        </form>
+      </div>
     </div>
 
     <script type="text/javascript">
