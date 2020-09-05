@@ -6,7 +6,10 @@ def generate_candidates(count):
 
   batches={
     'IMT': [2018, 2019],
-    'MT': [2020]
+    'MT': [2020],
+    'DT': [2020],
+    'PH': [2020],
+    'DS': [2020]
     }
 
   candidates = []
@@ -39,7 +42,7 @@ def generate_candidates(count):
 
   return candidates
 
-candidates = generate_candidates(10)
+candidates = generate_candidates(40)
 
 with open( "./fixtures/candidates.json", mode='w') as outfile:
   json.dump(candidates, outfile)

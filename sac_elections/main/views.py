@@ -65,22 +65,39 @@ def requireValidUser(request):
 
   return user
 
-def getCandidatesWithVoteCount():
-  MTECH_CANDIDATES = getCategories()['mtech']
-  categories = getCategories()['imtech']
-  categories.extend(MTECH_CANDIDATES)
+def getCandidatesWithVoteCount( user ):
+  # MTECH_CANDIDATES = getCategories()['mtech']
+  # categories = getCategories()['imtech']
+  # categories.extend(MTECH_CANDIDATES)
+
+  categories = getVoteCountCategory( user.role )
   votes = {}
+
+  # print("categories")
+  # print(categories)
   for category in categories:
-    # TODO: remove hardcode
-    batch = [category[:-2]]
-    if category[:-2] == "MT2020":
-      batch = ['MT2020', 'DT2020', 'MS2020', 'PH2020']
-    candidates = UserProfile.objects.filter(batch__in = batch, isCandidate = True)
-    votes[category[:-2]] = {}
+    candidates = UserProfile.objects.filter(batch = category, isCandidate = True)
+    votes[category] = {}
     for candidate in candidates:
-      votes[category[:-2]][candidate.username] = Vote.objects.filter(candidate = candidate).count() 
+      votes[category][candidate.username] = Vote.objects.filter(candidate = candidate).count()
+      votes[category] = {k: v for k, v in sorted( votes[category].items(), key=lambda item: item[1], reverse=True)}
   
   return votes
+
+#get vote count for dashboard
+def getVoteCountCategory( role ):
+
+  IMT_CAT = getCategories()['imtech']
+  IMT_CAT = [ x[:-2] for x in IMT_CAT ]
+  MT_CAT = ['MT2020', 'DT2020', 'MS2020', 'PH2020']
+
+  categories = {
+    'DV' : IMT_CAT + MT_CAT,
+    'IM' : IMT_CAT,
+    'MT' : MT_CAT,
+  }
+
+  return categories[role]
 
 ## CONTROLLER FUNCTIONS
 
@@ -186,19 +203,16 @@ def vote(request):
 
 def dashboard(request):
 
-  batches={}
   user = requireValidUser(request)
   if user.role == 'NA':
     return render(request, 'http/401.html', {"message": "You are not authorized to access this page"}, status = 401)
-  if user.role == 'DV':
-    batches = {'IMT' : [2018, 2019], 'MT' : [2020] } #DEV
-  if user.role == 'IM':
-    batches = {'IMT' : [2018, 2019] } #IMTECH SAC
-  if user.role == 'MT':
-    batches = {'MT' : [2020] } #MTECH_SAC
 
-  print(getCandidatesWithVoteCount())
-  return HttpResponse(200)
+  context = {}
+  context = initialize_context(request)
+
+  context['votes'] = getCandidatesWithVoteCount(user)
+  
+  # return HttpResponse(200)
 
   # context = {}
   # context = initialize_context(request)
