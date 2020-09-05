@@ -10,7 +10,6 @@ from django.core.exceptions import PermissionDenied, SuspiciousOperation
 
 
 ## HELPER FUNCTIONS
-
 # controller level check for unique voting
 def assertNotVoted(user, category):
   voted = Vote.objects.filter(voter = user, category = category)
@@ -141,6 +140,9 @@ def initialize_context(request):
 
 # <SignInViewSnippet>
 def sign_in(request):
+  # If logged in, redirect to home
+  if request.session.get('user', False):
+    return redirect(reverse('home'))
   # Get the sign-in URL
   sign_in_url, state = get_sign_in_url()
   # Save the expected state so we can validate in the callback
@@ -177,13 +179,13 @@ def callback(request):
 
 # @login_required(login_url="/")
 def vote(request):
+  context = initialize_context(request)
   user = requireValidUser(request)
   url_query = request.GET.get('m')
   votable =  getVotableHash()
 
   checkBatch(user.batch)
-    
-  context = {}
+
   context['user'] = {
       'name': " ".join(user.username.split(" ")[1:]),
       'rollno': user.username.split(" ")[0],
@@ -214,6 +216,7 @@ def dashboard(request):
   
   # return HttpResponse(200)
 
+
   # context = {}
   # context = initialize_context(request)
   # context['candidates'] = {}
@@ -234,7 +237,7 @@ def dashboard(request):
 
 
 def poll(request, category):
-
+  context = initialize_context(request)
   user = requireValidUser(request)
   votable = getVotableHash()
   assertNotVoted(user, category)
@@ -242,7 +245,8 @@ def poll(request, category):
   checkBatch(user.batch)
 
   if not checkCategory(category):
-    return render(request, 'http/404.html', {'message': "Invalid voting category"}, status = 404)
+    context['message'] = "The page you are trying to access does not exist"
+    return render(request, 'http/404.html', context, status = 404)
 
   if not canVoteCategory(user, category):
     raise PermissionDenied("You are not permitted to vote for this category")
@@ -273,15 +277,18 @@ def poll(request, category):
   return render(request, 'main/poll.html', context)
 
 def confirmation(request, category):
+  context = initialize_context(request)
   if request.method != 'POST':
-    return render(request, 'http/405.html', {'message': 'Invalid http method for the resource'} ,status = 405)
+    context['message'] = 'Invalid http method for the resource'
+    return render(request, 'http/405.html', context ,status = 405)
   user = requireValidUser(request)
   assertNotVoted(user, category)
 
   # legitimacy checks
   checkBatch(user.batch)
   if not checkCategory(category):
-    return render(request, 'http/404.html', {'message': "Invalid voting category"}, status = 404)
+    context['message'] = "The page you are trying to access does not exist"
+    return render(request, 'http/404.html', context, status = 404)
 
   if not canVoteCategory(user, category):
     raise PermissionDenied("You are not permitted to vote for this category")
