@@ -9,44 +9,64 @@
     </div>
     {% endif %}
     <div class="jumbotron">
-      <h1>SAC Election 2020</h1>
-      {% if user.is_authenticated %}
-        <h4>Welcome {{ user.name }} !</h4>
-        <p>Verify your details below and read the rules</p>
-          <p class="list-group-item">Name: {{user.name}}</p>
-          <p class="list-group-item">RollNo: {{user.rollno}}</p>
-          <p class="list-group-item">Batch: {{user.batch_programme }}{{user.batch_year}}</p>
-          <a href="{% url 'vote' %}" class="btn btn-primary btn-large">Click here to begin voting</a>
-      {% else %}
-        <h4>Please sign in with your IIITB email id to continue</h4>
-        <a href="{% url 'signin' %}" class="btn btn-primary btn-large" style="margin-top: 2%">Click here to sign in</a>
-      {% endif %}
-      <div style="margin-top: 5%">
-        <h3> Rules </h3>
-        <ul>
-          <li>
-            Sample rule: please follow this sample rule or say goodbye
-          </li>
-          <li>
-            Sample rule: please follow this sample rule or say goodbye
-          </li>
-          <li>
-            Sample rule: please follow this sample rule or say goodbye
-          </li>
-          <li>
-            Sample rule: please follow this sample rule or say goodbye
-          </li>
-          <li>
-            Sample rule: please follow this sample rule or say goodbye
-          </li>
-          <li>
-            Sample rule: please follow this sample rule or say goodbye
-          </li>
-          <li>
-            Sample rule: please follow this sample rule or say goodbye
-          </li>
-
-        </ul>
+      <div class="container">
+        {% if user.is_authenticated %}
+          <h1>Welcome {{ user.name }} !</h1>
+          <h5>Verify your details below and read the rules</h5>
+          <br>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><b>Name:</b> {{user.name}} {{user.surname}}</li>
+            <li class="list-group-item"><b>RollNo:</b> {{user.rollno}}</li>
+            <li class="list-group-item"><b>Batch:</b> {{user.batch_programme }}{{user.batch_year}}</li>
+          </ul>
+          <br>
+          <h3> Rules </h3>
+          <ul class="list-group">
+            <li class="list-group-item">
+              You can vote only if you login with your iiitb.org email
+            </li>
+            <li class="list-group-item">
+              Sample rule: please follow this sample rule or say goodbye
+            </li>
+            <li class="list-group-item">
+              Sample rule: please follow this sample rule or say goodbye
+            </li>
+            <li class="list-group-item">
+              Sample rule: please follow this sample rule or say goodbye
+            </li>
+            <li class="list-group-item">
+              Sample rule: please follow this sample rule or say goodbye
+            </li>
+          </ul>
+          <br>
+            <a href="{% url 'vote' %}" class="btn btn-primary btn-large col-md-3">Click here to begin voting</a>
+        {% else %}
+          <h1>Welcome to SAC Elections 2020!</h1>
+          <h3> Rules </h3>
+          <ul class="list-group">
+            <li class="list-group-item">
+              You can vote only if you login with your iiitb.org email
+            </li>
+            <li class="list-group-item">
+              Sample rule: please follow this sample rule or say goodbye
+            </li>
+            <li class="list-group-item">
+              Sample rule: please follow this sample rule or say goodbye
+            </li>
+            <li class="list-group-item">
+              Sample rule: please follow this sample rule or say goodbye
+            </li>
+            <li class="list-group-item">
+              Sample rule: please follow this sample rule or say goodbye
+            </li>
+          </ul>
+          <br>
+          <!-- <h4>Please sign in with your IIITB email id to continue.</h4> -->
+          <a href="{% url 'signin' %}" class="btn btn-primary btn-large col-lg-2 col-md-6" style="margin-top: 1%">Click here to sign in</a>
+        {% endif %}
+      </div>
+    </div>
+        
     </div>
     </div>
     {% endblock %}
