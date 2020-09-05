@@ -4,6 +4,7 @@ from requests_oauthlib import OAuth2Session
 import os
 import time
 from .models import UserProfile
+from datetime import datetime
 
 # This is necessary for testing with non-HTTPS localhost
 # Remove this if deploying to production
@@ -19,6 +20,22 @@ stream = open('oauth_settings.yml', 'r')
 settings = yaml.load(stream, yaml.SafeLoader)
 authorize_url = '{0}{1}'.format(settings['authority'], settings['authorize_endpoint'])
 token_url = '{0}{1}'.format(settings['authority'], settings['token_endpoint'])
+
+
+# controller level mail validation
+def validateEmail(email_value):
+
+  VALID_DOMAIN = [
+    'iiitb.org',
+    'iiitb.ac.in',
+  ]
+
+  email_domain = email_value[ email_value.find('@')+1:]
+
+  if email_domain not in VALID_DOMAIN:
+    return False
+
+  return True
 
 # Method to generate a sign-in url
 def get_sign_in_url():
@@ -51,6 +68,10 @@ def store_token(request, token):
       request.session['oauth_token'] = token
 
 def store_user(request, user):
+
+  if not validateEmail(user['mail'] if (user['mail'] != None) else user['userPrincipalName']):
+    return False
+
   request.session['user'] = {
     'is_authenticated': True,
     'name': user['displayName'],
@@ -67,6 +88,7 @@ def store_user(request, user):
     user.save()
   request.session['user']['uid'] = user.id
 
+  return True
 # <GetTokenSnippet>
 def get_token(request):
   token = request.session['oauth_token']

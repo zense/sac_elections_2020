@@ -1,2 +1,10 @@
-<h1>Not found</h1>
-<p>{{message}}</p>
+<!-- <HomeSnippet> -->
+    {% extends "main/layout.html" %}
+    {% block content %}
+    <div class="jumbotron">
+      <h1>404 Not Found </h1>
+      <p>{{message}}</p>
+      <a class="btn btn-secondary btn-small" href="javascript:history.back(1)" >Back</a>
+    </div>
+    {% endblock %}
+    <!-- </HomeSnippet> -->

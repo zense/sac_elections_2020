@@ -86,7 +86,9 @@ def getCandidatesWithVoteCount():
 
 # <HomeViewSnippet>
 def home(request):
+  message = request.GET.get('m', None)
   context = initialize_context(request)
+  context['q'] = "Invalid email id, please use your IIITB email to sign in" if message == "invalid" else None
   return render(request, 'main/home.html', context)
 # </HomeViewSnippet>
 
@@ -150,7 +152,8 @@ def callback(request):
 
   # Save token and user
   store_token(request, token)
-  store_user(request, user)
+  if not store_user(request, user):
+    return redirect('/?m=invalid')
 
   return HttpResponseRedirect(reverse('home'))
 # </CallbackViewSnippet>
@@ -186,7 +189,7 @@ def dashboard(request):
   batches={}
   user = requireValidUser(request)
   if user.role == 'NA':
-    return render(request, 'http/401.html', {"message": "Only admins can access this page"}, status = 401)
+    return render(request, 'http/401.html', {"message": "You are not authorized to access this page"}, status = 401)
   if user.role == 'DV':
     batches = {'IMT' : [2018, 2019], 'MT' : [2020] } #DEV
   if user.role == 'IM':

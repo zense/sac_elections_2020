@@ -1,17 +1,53 @@
 <!-- <HomeSnippet> -->
     {% extends "main/layout.html" %}
     {% block content %}
+    {% if q %}
+    <div class="container" style="margin-bottom: 2%">
+      <div class="card">
+        <div class="card-body" style="color: red">{{q}}</div>
+      </div>
+    </div>
+    {% endif %}
     <div class="jumbotron">
       <h1>SAC Election 2020</h1>
       {% if user.is_authenticated %}
         <h4>Welcome {{ user.name }} !</h4>
+        <p>Verify your details below and read the rules</p>
           <p class="list-group-item">Name: {{user.name}}</p>
           <p class="list-group-item">RollNo: {{user.rollno}}</p>
           <p class="list-group-item">Batch: {{user.batch_programme }}{{user.batch_year}}</p>
           <a href="{% url 'vote' %}" class="btn btn-primary btn-large">Click here to begin voting</a>
       {% else %}
-        <a href="{% url 'signin' %}" class="btn btn-primary btn-large">Click here to sign in</a>
+        <h4>Please sign in with your IIITB email id to continue</h4>
+        <a href="{% url 'signin' %}" class="btn btn-primary btn-large" style="margin-top: 2%">Click here to sign in</a>
       {% endif %}
+      <div style="margin-top: 5%">
+        <h3> Rules </h3>
+        <ul>
+          <li>
+            Sample rule: please follow this sample rule or say goodbye
+          </li>
+          <li>
+            Sample rule: please follow this sample rule or say goodbye
+          </li>
+          <li>
+            Sample rule: please follow this sample rule or say goodbye
+          </li>
+          <li>
+            Sample rule: please follow this sample rule or say goodbye
+          </li>
+          <li>
+            Sample rule: please follow this sample rule or say goodbye
+          </li>
+          <li>
+            Sample rule: please follow this sample rule or say goodbye
+          </li>
+          <li>
+            Sample rule: please follow this sample rule or say goodbye
+          </li>
+
+        </ul>
+    </div>
     </div>
     {% endblock %}
     <!-- </HomeSnippet> -->

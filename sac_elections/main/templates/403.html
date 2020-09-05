@@ -1,2 +1,10 @@
-<h1>Forbidden</h1>
-<p>{{ exception }}</p>
+<!-- <HomeSnippet> -->
+    {% extends "main/layout.html" %}
+    {% block content %}
+    <div class="jumbotron">
+      <h1>403 Forbidden </h1>
+      <p>{{exception}}</p>
+      <a class="btn btn-secondary btn-small" href="javascript:history.back(1)" >Back</a>
+    </div>
+    {% endblock %}
+    <!-- </HomeSnippet> -->

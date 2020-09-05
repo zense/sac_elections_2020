@@ -27,7 +27,7 @@
             <li class="nav-item">
               <a href="{% url 'vote' %}" class="nav-link{% if request.resolver_match.view_name == 'vote' %} active{% endif %}">Vote</a>
             </li>
-            {% if user.role != "NA" %}
+            {% if user.is_authenticated and user.role != "NA" %}
             <li class="nav-item">
               <a href="{% url 'dashboard' %}" class="nav-link{% if request.resolver_match.view_name == 'dashboard' %} active{% endif %}">Dashboard</a>
             </li>
