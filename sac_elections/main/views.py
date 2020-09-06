@@ -265,6 +265,7 @@ def poll(request, category):
   candidates = candidates.exclude( email__in = candidates_voted)
 
   context['candidates'] = candidates
+  context['category'] = category
   context['user'] = {
       'name': " ".join(user.username.split(" ")[1:]),
       'rollno': user.username.split(" ")[0],
@@ -335,3 +336,8 @@ def confirmation(request, category):
 
     # return redirect(reverse('vote', kwargs={'m': "done"}))
     return redirect('/vote/?m=done')
+
+
+def manifesto(request):
+
+  return render( request, 'main/manifesto.html')

@@ -16,6 +16,7 @@ urlpatterns = [
 				path('confirmation', views.confirmation, name='confirmation'),
   			])),
   	])),
+  path('manifesto', views.manifesto, name='manifesto'),
   path('dashboard', views.dashboard, name='dashboard'),
 ]
 
