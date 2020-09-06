@@ -1,0 +1,28 @@
+version: '3.5'
+
+services:
+  sqldb:
+    image: postgres:12.3-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=sac_elections
+      - POSTGRES_USER=sac_elections
+      - POSTGRES_PASSWORD=devPass123 # change in prod
+
+  web:
+    build: .
+    restart: always
+    command: ../scripts/start.sh
+    volumes:
+      - .:/sac_elections_2020
+    ports:
+      - "8000:8000"
+    depends_on:
+      - sqldb
+
+volumes:
+  postgres_data:
