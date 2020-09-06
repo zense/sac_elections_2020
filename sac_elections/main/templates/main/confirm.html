@@ -3,11 +3,16 @@
     {% block content %}
     <div class="jumbotron">
       <div class="container">
-        <h3>Confirm your vote</h3>
-          <p>Click <b>Confirm</b> to proceed<br> Click <b>Back</b> to cancel the vote</p>
-            <h5 class="list-group-item"><b>{{category}}</b></h5>
-            <p class="list-group-item"><b>Name:</b> {{candidate.username}}</p>
-            <p class="list-group-item"><b>Batch:</b> {{candidate.batch_programme }}{{candidate.batch_year}}</p>
+        {% load custom_filters %}
+        <h1>Confirmation</h1>
+          <p>
+            Click <b>Confirm</b> to proceed<br> 
+            Click <b>Back</b> to cancel the vote
+          </p>
+
+          <p class="list-group-item"><b>{{category|disp}}</b></p>
+          <p class="list-group-item"><b>Name:</b> {{candidate.username}}</p>
+          <p class="list-group-item"><b>Batch:</b> {{candidate.batch_programme }}{{candidate.batch_year}}</p>
       
         <form method="post" action="" id="confirmForm">
           {% csrf_token %}

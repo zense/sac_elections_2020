@@ -4,20 +4,34 @@
     {% if q %}
     <div class="container" style="margin-bottom: 2%">
       <div class="card">
-        <div class="card-body" style="color: green">{{q}}</div>
+        <div class="card-body col-md-3" style="color: green">{{q}}</div>
       </div>
     </div>
     {% endif %}
     <div class="jumbotron">
-      <h1>SAC Election 2020</h1>
+      <h1>Category</h1>
+      <br>
       {% if user.is_authenticated %}
-        <h4>Choose a category</h4>
+        <!-- <h4>Choose a category</h4> -->
         <ul class="list-group">
+          {% load custom_filters %}
           {% for batch in votable %}
-         <a href="/vote/{{batch}}"><li class="list-group-item">{{batch}}{% if batch in voted_cats %}<span style="float: right; color: green">Voted</span>{% endif %}</li></a>
+            {% if batch in voted_cats %}
+              <span class="list-group-item list-group-item-success">
+                {{batch|disp}}
+                <!-- <span style="float: right; color: green">Voted
+                </span> -->
+              </span>
+              {% else %}
+              <a href="/vote/{{batch}}" class="list-group-item">
+                {{batch|disp}}
+              </a>
+              {% endif %}
+            </a>
           {% endfor %}
         </ul>
-        <a href="../" class="btn btn-secondary btn-small" style="margin-top: 2%;">Back</a>
+        <br>
+        <input type="button" value="Back" class="btn btn-secondary btn-small col-lg-2 float-bottom" onclick="history.back(-1)"/>
       {% else %}
         <a href="{% url 'signin' %}" class="btn btn-primary btn-large">Click here to sign in</a>
       {% endif %}

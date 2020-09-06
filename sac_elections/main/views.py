@@ -65,9 +65,6 @@ def requireValidUser(request):
   return user
 
 def getCandidatesWithVoteCount( user ):
-  # MTECH_CANDIDATES = getCategories()['mtech']
-  # categories = getCategories()['imtech']
-  # categories.extend(MTECH_CANDIDATES)
 
   categories = getVoteCountCategory( user.role )
   votes = {}
@@ -75,11 +72,16 @@ def getCandidatesWithVoteCount( user ):
   # print("categories")
   # print(categories)
   for category in categories:
-    candidates = UserProfile.objects.filter(batch = category, isCandidate = True)
-    votes[category] = {}
+    batch = category[:-2]
+    gender = str(category[-2:-1])
+
+    candidates = UserProfile.objects.filter(batch = category[:-2], isCandidate = True, gender=gender)
+    votes[category[:-1]] = {}
     for candidate in candidates:
-      votes[category][candidate.username] = Vote.objects.filter(candidate = candidate).count()
-      votes[category] = {k: v for k, v in sorted( votes[category].items(), key=lambda item: item[1], reverse=True)}
+      votes[category[:-1]][candidate.username] = Vote.objects.filter(candidate = candidate).count()
+      votes[category[:-1]] = {k: v for k, v in sorted( votes[category[:-1]].items(), key=lambda item: item[1], reverse=True)}
+
+    print( votes )
   
   return votes
 
@@ -87,8 +89,7 @@ def getCandidatesWithVoteCount( user ):
 def getVoteCountCategory( role ):
 
   IMT_CAT = getCategories()['imtech']
-  IMT_CAT = [ x[:-2] for x in IMT_CAT ]
-  MT_CAT = ['MT2020', 'DT2020', 'MS2020', 'PH2020']
+  MT_CAT = ['MT2020M1', 'MT2020F1']
 
   categories = {
     'DV' : IMT_CAT + MT_CAT,

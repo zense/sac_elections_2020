@@ -26,7 +26,7 @@ SECRET_KEY = '2mzu0d1o5hg_7at9+j52pd*zq(u6gs=u0e3y)ig4xjy+6d0b_*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0", "192.168.0.9"] # localip
+ALLOWED_HOSTS = ["localhost", "0.0.0.0", "192.168.0.9"] # localip
 
 
 # Application definition

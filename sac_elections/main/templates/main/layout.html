@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>SAC Election 2020</title>
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+    <title>SAC Elections 2020</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
       crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto" rel="stylesheet"> 
     {% load static %}
+    {% load custom_filters %}
+    <link rel="stylesheet" type="text/css" href="{% static "main/style.css" %}">
     <link rel="stylesheet" href="{% static "main/app.css" %}">
   </head>
 
-  <body background="https://images.shiksha.com/mediadata/images/1533799954phpG6QuDa.jpeg" style="background-size: cover">
+  <!-- <body background="https://images.shiksha.com/mediadata/images/1533799954phpG6QuDa.jpeg" style="background-size: cover"> -->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
       <div class="container">
-        <a href="{% url 'home' %}" class="navbar-brand">SAC Election 2020</a>
+        <div class=""><a href="{% url 'home' %}" class=" font-weight-bold navbar-brand">SAC Elections 2020</a></div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
           aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -24,9 +27,11 @@
             <li class="nav-item">
               <a href="{% url 'home' %}" class="nav-link{% if request.resolver_match.view_name == 'home' %} active{% endif %}">Home</a>
             </li>
+            {% if user.is_authenticated %}
             <li class="nav-item">
               <a href="{% url 'vote' %}" class="nav-link{% if request.resolver_match.view_name == 'vote' %} active{% endif %}">Vote</a>
             </li>
+            {% endif %}
             {% if user.is_authenticated and user.role != "NA" %}
             <li class="nav-item">
               <a href="{% url 'dashboard' %}" class="nav-link{% if request.resolver_match.view_name == 'dashboard' %} active{% endif %}">Dashboard</a>
@@ -35,20 +40,11 @@
           </ul>
           <ul class="navbar-nav justify-content-end">
             {% if user.is_authenticated %}
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                  {% if user.avatar %}
-                    <img src="{{ user.avatar }}" class="rounded-circle align-self-center mr-2" style="width: 32px;">
-                  {% else %}
-                    <i class="far fa-user-circle fa-lg rounded-circle align-self-center mr-2" style="width: 32px;"></i>
-                  {% endif %}
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                  <h5 class="dropdown-item-text mb-0">{{ user.name }}</h5>
-                  <p class="dropdown-item-text text-muted mb-0">{{ user.email }}</p>
-                  <div class="dropdown-divider"></div>
-                  <a href="{% url 'signout' %}" class="dropdown-item">Sign Out</a>
-                </div>
+              <li class="nav-item">
+                <span class="nav-link disabled">Logged in as {{ user.name }}</span>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'signout' %}" class="nav-link">Sign Out</a>
               </li>
             {% else %}
               <li class="nav-item">
