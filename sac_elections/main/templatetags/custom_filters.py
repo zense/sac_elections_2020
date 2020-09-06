@@ -1,5 +1,6 @@
 from django import template
 from django.template.defaultfilters import stringfilter
+import json
 
 #custom filters
 #https://docs.djangoproject.com/en/3.1/howto/custom-template-tags/#template-filters-that-expect-strings
@@ -28,3 +29,13 @@ def getCategoryDisplayNames(value):
   }
   
   return DISPLAY_NAMES[value]
+
+
+@register.filter(name="gethash")
+@stringfilter
+def getCategoryDisplayNames(value):
+  value = value
+  batch, hashed = value.split("@#@")
+  hashed = hashed.replace("\'","\"")
+  hashed = json.loads(hashed)
+  return hashed[batch]

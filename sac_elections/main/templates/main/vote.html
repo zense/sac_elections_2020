@@ -19,8 +19,7 @@
             {% if batch in voted_cats %}
               <span class="list-group-item list-group-item-success">
                 {{batch|disp}}
-                <!-- <span style="float: right; color: green">Voted
-                </span> -->
+                <font style="float: right; color: green">{{batch|add:"@#@"|add:hashes|gethash}}</font>
               </span>
               {% else %}
               <a href="/vote/{{batch}}" class="list-group-item">

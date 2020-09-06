@@ -198,7 +198,11 @@ def vote(request):
   context['votable'] = votable[user.batch]
   votes = Vote.objects.filter(voter = user)
   voted_cats = [ vote.category for vote in votes] # voted categories
+  hashes  = {}
+  for cat in voted_cats:
+  	hashes[cat] = Vote.objects.filter(category = cat, voter = user)[0].voteHash
   context['voted_cats'] = voted_cats
+  context['hashes'] = str(hashes)
   context['q'] = "Your vote was recorded" if url_query == 'done' else None
 
   return render(request, 'main/vote.html', context)

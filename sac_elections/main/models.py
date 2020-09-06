@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 import re
+import os, binascii, hashlib
 
 def validate_email(email_value):
 
@@ -50,6 +51,7 @@ class UserProfile(models.Model):
 	isCandidate = models.BooleanField(default = False)
 	role = models.CharField(max_length=2, choices=ROLES, default=NA) #admin roles
 	gender = models.CharField(max_length = 2, default = "NA") # only for candidates. Use M and F
+	salt = models.CharField(max_length=30, default = str(binascii.b2a_hex(os.urandom(8))).replace("\'", "").replace("b",""))
 
 	@staticmethod
 	def findByEmail(email):
@@ -86,11 +88,14 @@ class Vote(models.Model):
 	time = models.DateTimeField("voted on", default = timezone.now)
 	voter = models.ForeignKey(UserProfile, on_delete = models.RESTRICT, related_name = "voter", default = 0) # dont let the user delete after voting
 	category = models.CharField(max_length = 20, default = "NOBATCH")
+	voteHash = models.CharField(max_length = 65, default = "nohash") # 64 bit sha-256
 
 	# override save to default category to candidate's batch
 	def save(self, *args, **kwargs):
 		if not self.category:
 			self.category = self.candidate.batch + self.candidate.gender
+		self.voteHash = hashlib.sha256((self.voter.username + self.candidate.username + self.voter.salt).encode()).hexdigest()
+
 		super(Vote, self).save(*args, **kwargs)
 
 	def __str__(self):
