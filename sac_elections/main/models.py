@@ -51,7 +51,7 @@ class UserProfile(models.Model):
 	isCandidate = models.BooleanField(default = False)
 	role = models.CharField(max_length=2, choices=ROLES, default=NA) #admin roles
 	gender = models.CharField(max_length = 2, default = "NA") # only for candidates. Use M and F
-	salt = models.CharField(max_length=30, default = str(binascii.b2a_hex(os.urandom(8))).replace("\'", "").replace("b",""))
+	salt = models.CharField(max_length=30, default = 'nosalt')
 
 	@staticmethod
 	def findByEmail(email):
@@ -70,7 +70,9 @@ class UserProfile(models.Model):
 			batch = re.findall("^(IMT|MT|MS|DT|SMT)", roll)[0]
 			year = re.findall("[0-9]{4}", roll)[0]
 		full_batch = batch + str(year)
-		user = UserProfile.objects.create(batch_programme = batch, batch_year = year, batch = full_batch, email = email, username = username, isCandidate = isCandidate )
+		salt = str(binascii.b2a_hex(os.urandom(8))).replace("\'", "").replace("b","")
+		user = UserProfile.objects.create(batch_programme = batch, batch_year = year, batch = full_batch, email = email, username = username, isCandidate = isCandidate, salt=salt )
+
 		return user
 
 	# save batch from batch programme and batch year
