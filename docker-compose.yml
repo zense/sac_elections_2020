@@ -19,10 +19,30 @@ services:
     command: ../scripts/start.sh
     volumes:
       - .:/sac_elections_2020
+      - static_files:/sac_elections_2020/sac_elections/static
     ports:
       - "8000:8000"
     depends_on:
       - sqldb
 
+  # im just gonna set the context, not sure which wordir build will use (dc.yaml or Dockerfile dir)
+  nginx:
+    build:
+      context: ./production/nginx
+      dockerfile: Dockerfile
+    volumes:
+      # os.path.join(BASE_DIR, 'static') is /sac_elections_2020/sac_elections/static 
+      - static_files:/sac_elections_2020/sac_elections/static
+
+      # change external port (if required) to avoid conflicts, on server change this to port 80
+    ports:
+      - "80:80"
+
+    depends_on:
+      - web
+
+
 volumes:
   postgres_data:
+
+  static_files:
