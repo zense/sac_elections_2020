@@ -94,7 +94,6 @@ class Vote(models.Model):
 	def save(self, *args, **kwargs):
 		if not self.category:
 			self.category = self.candidate.batch + self.candidate.gender
-		self.voteHash = hashlib.sha256((self.voter.username + self.candidate.username + self.voter.salt).encode()).hexdigest()
 
 		super(Vote, self).save(*args, **kwargs)
 

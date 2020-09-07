@@ -18,6 +18,7 @@ urlpatterns = [
   	])),
   path('manifesto', views.manifesto, name='manifesto'),
   path('dashboard', views.dashboard, name='dashboard'),
+  path('confhash', views.confhash, name = 'confhash'),
 ]
 
 #path('confirmation', views.confirmation, name='confirmation'),

@@ -7,6 +7,7 @@ from main.auth_helper import get_sign_in_url, get_token_from_code, store_token, 
 from main.graph_helper import get_user, get_calendar_events
 import dateutil.parser
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
+import hashlib
 
 
 ## HELPER FUNCTIONS
@@ -335,7 +336,8 @@ def confirmation(request, category):
 
   else:
     # create and save the vote
-    vote = Vote.objects.create(candidate = candidate, voter = user, category = category)
+    voteHash = hashlib.sha256((user.username + candidate.username + user.salt).encode()).hexdigest()
+    vote = Vote.objects.create(candidate = candidate, voter = user, category = category, voteHash = voteHash)
     # increment candidate's vote_count, easier for dashboard
     vote.save()
 
@@ -346,3 +348,15 @@ def confirmation(request, category):
 def manifesto(request):
 
   return render( request, 'main/manifesto.html')
+
+
+def confhash(request):
+  if request.method == 'GET' and request.GET.get('hash', False):
+    hashed = request.GET.get('hash', None)
+    vote  =  Vote.objects.filter(voteHash = hashed)[0] if Vote.objects.filter(voteHash = hashed).count() == 1 else None
+    if not vote:
+      return HttpResponse("Does not exist")
+    db_hash = hashlib.sha256((vote.voter.username + vote.candidate.username + vote.voter.salt).encode()).hexdigest()
+    return HttpResponse(db_hash +" , "+ str(db_hash == hashed))
+
+  return render(request, 'main/hashed.html')
