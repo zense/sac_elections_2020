@@ -345,9 +345,29 @@ def confirmation(request, category):
     return redirect('/vote/?m=done')
 
 
-def manifesto(request):
+def manifesto(request, category=None):
 
-  return render( request, 'main/manifesto.html')
+  if not category:
+    categories = getCategories()
+    categories = [ cat for batch, cat_list in categories.items() for cat in cat_list ]
+  else:
+    categories = getCategories()[str(category)]
+
+  # print(categories)
+  context = {}
+  context = initialize_context(request)
+  context['category'] = category
+  context['manifestos'] = {}
+
+  for cat in categories:
+    candidate_list = UserProfile.objects.filter( batch=cat[:-2], isCandidate = True )
+
+    for cand in candidate_list:
+      context['manifestos'][str(cand)] = Manifesto.objects.filter( candidate=cand ).first()
+
+  print( context['manifestos'] )
+
+  return render( request, 'main/manifesto.html', context)
 
 
 def confhash(request):

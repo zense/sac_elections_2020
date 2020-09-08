@@ -106,3 +106,22 @@ class Vote(models.Model):
 	class Meta:
 		# failsafe model level check for one vote per person
 		unique_together = (('voter', 'category'), ('voter', 'candidate'))
+
+class Manifesto(models.Model):
+	candidate = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
+	image = models.ImageField(upload_to="manifesto_images")
+	category = models.CharField(max_length=30, default="NOBATCH")
+	agenda = models.TextField(max_length=500)
+	link_1 = models.CharField(max_length=50, blank=True)
+	link_2 = models.CharField(max_length=50, blank=True)
+	link_3 = models.CharField(max_length=50, blank=True)
+
+	def save(self, *args, **kwargs):
+		if not self.category:
+			self.category = self.candidate.batch + self.candidate.gender + "1"
+		
+		super(Manifesto, self).save(*args, **kwargs)
+
+
+	def __str__(self):
+		return f"manifesto by {self.candidate.username}"

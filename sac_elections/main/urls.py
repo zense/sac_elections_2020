@@ -16,7 +16,10 @@ urlpatterns = [
 				path('confirmation', views.confirmation, name='confirmation'),
   			])),
   	])),
-  path('manifesto', views.manifesto, name='manifesto'),
+  path('manifesto/', include([
+    path('', views.manifesto, name='manifesto'),
+    path('<category>/', views.manifesto, name='manifesto'),
+  ])),
   path('dashboard', views.dashboard, name='dashboard'),
   path('confhash', views.confhash, name = 'confhash'),
 ]
