@@ -1,6 +1,7 @@
 <!-- <HomeSnippet> -->
     {% extends "main/layout.html" %}
     {% block content %}
+    {% load custom_filters %}
     {% if q %}
     <div class="container" style="margin-bottom: 2%">
       <div class="card">
@@ -30,7 +31,8 @@
           {% endfor %}
         </ul>
         <br>
-        <input type="button" value="Back" class="btn btn-secondary btn-small col-lg-2 float-bottom" onclick="history.back(-1)"/>
+        <!-- <input type="button" value="Back" class="btn btn-secondary btn-small col-lg-2 float-bottom" onclick="history.back(-1)"/> -->
+        <a href="{% url 'manifesto' %}{{ user.batch_programme|getslug }}" class="btn btn-secondary btn-small col-lg-2 float-bottom">Back</a>
       {% else %}
         <a href="{% url 'signin' %}" class="btn btn-primary btn-large">Click here to sign in</a>
       {% endif %}

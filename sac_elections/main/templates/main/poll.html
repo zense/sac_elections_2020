@@ -18,8 +18,8 @@
           <form method="post" action="confirmation" id="pollform">
             {% csrf_token %}
             <input type="hidden" name="vote" id="votehfield" value="">
-            <!-- <a href="../" class="btn btn-secondary btn-small col-lg-2 float-bottom" style="margin-top: 2%;">Back</a> -->
-            <input type="button" value="Back" class="btn btn-secondary btn-small col-lg-2 float-bottom" style="margin-top: 2%" onclick="history.back(-1)"/>
+            <a href="{% url 'vote' %}" class="btn btn-secondary btn-small col-lg-2 float-bottom" style="margin-top: 2%;">Back</a>
+            <!-- <input type="button" value="Back" class="btn btn-secondary btn-small col-lg-2 float-bottom" style="margin-top: 2%" onclick="history.back(-1)"/> -->
             <input type="button" id="submitVote" onclick="getval()" class="btn btn-primary btn-large col-lg-2" style="margin-top: 2%" value="Next">
           </form>
         </ul>

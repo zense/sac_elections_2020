@@ -1,6 +1,7 @@
 <!-- <HomeSnippet> -->
     {% extends "main/layout.html" %}
     {% block content %}
+    {% load custom_filters %}
     {% if q %}
     <div class="container" style="margin-bottom: 2%">
       <div class="card">
@@ -26,20 +27,29 @@
               You can vote only if you login with your iiitb.org email
             </li>
             <li class="list-group-item">
-              Sample rule: please follow this sample rule or say goodbye
+              Only following batch students can vote.
+                <ul>
+                  <li>IMT2017 | IMT2018 | IMT2019</li>
+                  <!-- <li>IMT2018</li> -->
+                  <!-- <li>IMT2019</li> -->
+                  <li>MT2020 | DT2020 | MS2020 | PH2020</li>
+                  <!-- <li>DT2020</li> -->
+                  <!-- <li>PH2020</li> -->
+                  <!-- <li>MS2020</li> -->
+                </ul>
             </li>
             <li class="list-group-item">
-              Sample rule: please follow this sample rule or say goodbye
+              For each vote you cast, you'll receive a hash, keep it with you as a proof of your vote.
             </li>
             <li class="list-group-item">
-              Sample rule: please follow this sample rule or say goodbye
+              Click the button below to signin, you'll be redrected to Microsoft Online Portal to signin.
             </li>
             <li class="list-group-item">
-              Sample rule: please follow this sample rule or say goodbye
+              <b>We don't receive or handle your password.</b>
             </li>
           </ul>
           <br>
-            <a href="{% url 'vote' %}" class="btn btn-primary btn-large col-md-3">Click here to begin voting</a>
+            <a href="{% url 'manifesto' %}{{ user.batch_programme|getslug }}" class="btn btn-primary btn-large col-md-3">Meet the Candidates!</a>
         {% else %}
           <h1>Welcome to SAC Elections 2020!</h1>
           <!-- <br> -->
@@ -49,21 +59,31 @@
               You can vote only if you login with your iiitb.org email
             </li>
             <li class="list-group-item">
-              Sample rule: please follow this sample rule or say goodbye
+              Only following batch students can vote.
+                <ul>
+                  <li>IMT2017 | IMT2018 | IMT2019</li>
+                  <!-- <li>IMT2018</li> -->
+                  <!-- <li>IMT2019</li> -->
+                  <li>MT2020 | DT2020 | MS2020 | PH2020</li>
+                  <!-- <li>DT2020</li>
+                  <li>PH2020</li>
+                  <li>MS2020</li> -->
+                </ul>
             </li>
             <li class="list-group-item">
-              Sample rule: please follow this sample rule or say goodbye
+              For each vote you cast, you'll receive a hash, keep it with you as a proof of your vote.
             </li>
             <li class="list-group-item">
-              Sample rule: please follow this sample rule or say goodbye
+              Click the button below to signin, you'll be redrected to Microsoft Online Portal to signin.
             </li>
             <li class="list-group-item">
-              Sample rule: please follow this sample rule or say goodbye
+            <b>We don't receive or handle your password.</b>
             </li>
           </ul>
           <br>
           <!-- <h4>Please sign in with your IIITB email id to continue.</h4> -->
-          <a href="{% url 'signin' %}" class="btn btn-primary btn-large col-lg-2 col-md-6" style="margin-top: 1%">Click here to sign in</a>
+          <a href="{% url 'signin' %}" class="btn btn-primary btn-large col-lg-3 col-md-6" style="margin-top: 1%">Click here to sign in</a>
+          <a href="{% url 'manifesto' %}{{ user.batch_programme|getslug }}" class="btn btn-primary btn-large col-lg-3 col-md-6" style="margin-top: 1%">Meet the Candidates!</a>
         {% endif %}
       </div>
     </div>
