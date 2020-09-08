@@ -8,7 +8,7 @@ COPY requirements.txt /sac_elections_2020/
 RUN pip3 install -r requirements.txt
 COPY . /sac_elections_2020/
 RUN chmod +x scripts/*
-RUN chmod +x sac_election.env
+RUN chmod 755 sac_election.env
 WORKDIR /sac_elections_2020/sac_elections
 EXPOSE 8000
 

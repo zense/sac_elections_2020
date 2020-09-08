@@ -20,6 +20,8 @@ services:
     volumes:
       - .:/sac_elections_2020
       - static_files:/sac_elections_2020/sac_elections/static
+    environment:
+      - DJ_SECRET="72vy(4t(2s*@b7f-_mz%9y*%2i(+ei40uaraku!k_e1yup6keb"
     ports:
       - "8000:8000"
     depends_on:
