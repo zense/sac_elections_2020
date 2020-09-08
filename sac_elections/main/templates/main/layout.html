@@ -27,9 +27,12 @@
             <li class="nav-item">
               <a href="{% url 'home' %}" class="nav-link{% if request.resolver_match.view_name == 'home' %} active{% endif %}">Home</a>
             </li>
+            <li class="nav-item">
+              <a href="{% url 'manifesto' %}" class="nav-link{% if request.resolver_match.view_name == 'manifesto' %} active{% endif %}">Candidates</a>
+            </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
-              <a href="{% url 'vote' %}" class="nav-link{% if request.resolver_match.view_name == 'vote' %} active{% endif %}">Vote</a>
+              <a href="{% url 'vote' %}" class="nav-link{% if request.resolver_match.view_name == 'vote' %} active{% endif %} nav-link{% if request.resolver_match.view_name == 'confirmation' %} active{% endif %} nav-link{% if request.resolver_match.view_name == 'poll' %} active{% endif %}">Vote</a>
             </li>
             {% endif %}
             {% if user.is_authenticated and user.role != "NA" %}

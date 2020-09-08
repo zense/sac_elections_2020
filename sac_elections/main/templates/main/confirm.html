@@ -19,7 +19,7 @@
           <input type="hidden" name="vote" value="{{candidate.email}}">
           <input type="hidden" name="confirm" value="true">
 
-          <a href="../" class="btn btn-secondary btn-small col-lg-2 col-md-3" style="margin-top: 2%;">Back</a>
+          <a href="{% url 'vote' %}" class="btn btn-secondary btn-small col-lg-2 col-md-3" style="margin-top: 2%;">Back</a>
           <input type="button" id="submitVote" onclick="getval()" class="btn btn-success btn-large col-lg-2 col-md-3" style="margin-top: 2%" value="Confirm">
           
           <br>
