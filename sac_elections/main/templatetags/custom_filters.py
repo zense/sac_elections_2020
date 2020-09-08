@@ -26,9 +26,37 @@ def getCategoryDisplayNames(value):
     'IMT2019F': "iMtech 2019 Female SAC",
     'IMT2018M': "iMtech 2018 Male SAC",
     'IMT2018F': "iMtech 2018 Female SAC",
+    'imtech': 'iMtech',
+    'mtech': 'Mtech'
   }
+
+  try:
+    name = DISPLAY_NAMES[value]
+  except:
+    name = ''
   
-  return DISPLAY_NAMES[value]
+  return name
+
+
+@register.filter(name="getslug")
+@stringfilter
+def getSlug(value):
+  SLUG_VALUES = {
+    'IMT': 'imtech',
+    'MT': 'mtech',
+    'DT': 'mtech',
+    'MS': 'mtech',
+    'PH': 'mtech',
+  }
+
+  try:
+    slug = SLUG_VALUES[value]
+  except:
+    slug = ''
+  
+  return slug
+
+  return SLUG_VALUES
 
 
 @register.filter(name="gethash")

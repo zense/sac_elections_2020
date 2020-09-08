@@ -119,3 +119,5 @@ media/
 # **/migrations/**
 # !**/migrations
 # !**/migrations/__init__.py
+sac_elections/main/fixtures/candidates.json
+sac_elections/sac_elections/settings.py
