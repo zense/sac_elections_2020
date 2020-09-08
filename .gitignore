@@ -1,3 +1,9 @@
+#config files
+oauth.yml
+docker-compose.yaml
+sac_election.env
+settings.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
