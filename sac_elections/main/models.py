@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
@@ -125,3 +125,16 @@ class Manifesto(models.Model):
 
 	def __str__(self):
 		return f"manifesto by {self.candidate.username}"
+
+class Election(models.Model):
+	startTime = models.DateTimeField("start time", default = timezone.now() - timedelta(days=3))
+	endTime = models.DateTimeField("end time", default = timezone.now() + timedelta(days=300))
+
+	def save(self, *args, **kwargs):
+		if not self.pk and Election.objects.exists():
+			raise ValidationError('There can be only one Election instance at one time')
+
+		if self.startTime > self.endTime:
+			raise ValidationError('startTime can not be after endTime')
+
+		return super(Election, self).save(*args, **kwargs)
