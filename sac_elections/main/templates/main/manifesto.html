@@ -12,7 +12,7 @@
           <div class="col-sm-6 col-md-4 col-md-offset-0 xs-margin-8 xs-no-margin-rl xs-no-margin-bottom">
             <div class="testimonial">
               <div>
-                <img src="{{mani.image.url}}" width="100%" height="100%" alt="">
+                <img src="{{mani.image.url}}" width="340" height="450" alt="">
               </div>
               <!-- //.bg-white -->
             </div>
@@ -26,32 +26,57 @@
             <div class="row">
               <div class="col-md-12">
                 <p class="font-family-alt no-margin-bottom no-margin-rl sm-text-large text-extra-large text-gray-dark-2">
-                  <b>Agenda</b>
-                  <br>
-                  {{ mani.agenda }}
+                  <!-- <b>Introduction</b> -->
+                  <!-- <br> -->
+                  {{ mani.intro }}
 
                 </p>
               </div>
             </div>
             <div class="row">
+              <div class="col-md-12">
+                <!-- <p class="font-family-alt no-margin-bottom no-margin-rl sm-text-large text-extra-large text-gray-dark-2"> -->
+                  <!-- <b>Agenda</b> -->
+                  <ul>
+                    {% if mani.agenda_1 %}
+                    <li>{{ mani.agenda_1 }}</li>
+                    {% endif %}
+                    {% if mani.agenda_2 %}
+                    <li>{{ mani.agenda_2 }}</li>
+                    {% endif %}
+                    {% if mani.agenda_3 %}
+                    <li>{{ mani.agenda_3 }}</li>
+                    {% endif %}
+                  </ul>
+                <!-- </p> -->
+              </div>
+            </div>
+            <div class="row">
               <div class="col-lg-6">
-                <p><b>Email</b> abcd@iiitb.ac.in</p>
+                <p><b>Email: </b> {{mani.candidate.email}} </p>
               </div>
               <div class="col-lg-6">
-                <p><b>Contact Number</b> 123456789</p>
+                <p><b>Contact Number: </b> {{mani.contact_number}} </p>
               </div>
             </div>
             <div class="row">
               <div class="col-lg-4">
-                <a href="{{ mani.link_1 }}">Link 1</a>
+                {% if mani.link_1 %}
+                <a href="{{ mani.link_1 }}">{{mani.display_1}}</a>
+                {% endif %}
               </div>
               <div class="col-lg-4">
-                <a href="{{ mani.link_2 }}">Link 2</a>
+                {% if mani.link_1 %}
+                <a href="{{ mani.link_2 }}">{{mani.display_2}}</a>
+                {% endif %}
               </div>
               <div class="col-lg-4">
-                <a href="{{ mani.link_3 }}">Link 3</a>
+                {% if mani.link_1 %}
+                <a href="{{ mani.link_3 }}">{{mani.display_3}}</a>
+                {% endif %}
               </div>
             </div>
+            <br>
           </div>
         </div>
       </div>
