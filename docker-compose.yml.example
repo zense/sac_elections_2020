@@ -20,6 +20,7 @@ services:
     volumes:
       - .:/sac_elections_2020
       - static_files:/sac_elections_2020/sac_elections/static
+      - media_files:/sac_elections_2020/sac_elections/media
     environment:
       - DJ_SECRET="72vy(4t(2s*@b7f-_mz%9y*%2i(+ei40uaraku!k_e1yup6keb"
     ports:
@@ -36,6 +37,7 @@ services:
       # os.path.join(BASE_DIR, 'static') is /sac_elections_2020/sac_elections/static 
       - static_files:/sac_elections_2020/sac_elections/static
 
+      - media_files:/sac_elections_2020/sac_elections/media
       # change external port (if required) to avoid conflicts, on server change this to port 80
     ports:
       - "80:80"
@@ -48,3 +50,5 @@ volumes:
   postgres_data:
 
   static_files:
+
+  media_files:
