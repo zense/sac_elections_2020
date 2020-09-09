@@ -1,6 +1,6 @@
 #config files
 oauth.yml
-docker-compose.yaml
+docker-compose.yml
 sac_election.env
 settings.py
 
