@@ -111,10 +111,17 @@ class Manifesto(models.Model):
 	candidate = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
 	image = models.ImageField(upload_to="manifesto_images")
 	category = models.CharField(max_length=30, default="NOBATCH")
-	agenda = models.TextField(max_length=500)
-	link_1 = models.CharField(max_length=50, blank=True)
-	link_2 = models.CharField(max_length=50, blank=True)
-	link_3 = models.CharField(max_length=50, blank=True)
+	intro = models.TextField(max_length=500, default="")
+	agenda_1 = models.TextField(max_length=200, default="")
+	agenda_2 = models.TextField(max_length=200, default="")
+	agenda_3 = models.TextField(max_length=200, default="")
+	contact_number = models.CharField(max_length=10, default="")
+	link_1 = models.CharField(max_length=200, blank=True)
+	display_1 = models.CharField(max_length=50, blank=True)
+	link_2 = models.CharField(max_length=200, blank=True)
+	display_2 = models.CharField(max_length=50, blank=True)
+	link_3 = models.CharField(max_length=200, blank=True)
+	display_3 = models.CharField(max_length=50, blank=True)
 
 	def save(self, *args, **kwargs):
 		if not self.category:
