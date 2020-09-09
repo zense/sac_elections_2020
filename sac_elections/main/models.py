@@ -126,9 +126,17 @@ class Manifesto(models.Model):
 	def __str__(self):
 		return f"manifesto by {self.candidate.username}"
 
+#Helper functions to calculate default time
+def StartTime():
+	return timezone.now() - timedelta(days=3)
+
+def EndTime():
+	return timezone.now() + timedelta(days=300)
+
+
 class Election(models.Model):
-	startTime = models.DateTimeField("start time", default = timezone.now() - timedelta(days=3))
-	endTime = models.DateTimeField("end time", default = timezone.now() + timedelta(days=300))
+	startTime = models.DateTimeField("start time", default = StartTime)
+	endTime = models.DateTimeField("end time", default = EndTime)
 
 	def save(self, *args, **kwargs):
 		if not self.pk and Election.objects.exists():
