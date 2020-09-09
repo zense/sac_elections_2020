@@ -8,4 +8,9 @@
 ../sac_election.env
 sleep 10; # get the above nc code to work
 python3 manage.py migrate;
-python3 manage.py runserver 0.0.0.0:8000;
+
+# development
+#python3 manage.py runserver 0.0.0.0:8000;
+
+# production 4 workers
+gunicorn -w 4 sac_elections.wsgi -b 0.0.0.0:8000

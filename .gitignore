@@ -87,6 +87,7 @@ celerybeat-schedule
 
 # dotenv
 .env
+sac_election.env
 
 # virtualenv
 .venv
