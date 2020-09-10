@@ -45,6 +45,9 @@
             <li class="nav-item">
               <a href="{% url 'vote' %}" class="nav-link{% if request.resolver_match.view_name == 'vote' %} active{% endif %} nav-link{% if request.resolver_match.view_name == 'confirmation' %} active{% endif %} nav-link{% if request.resolver_match.view_name == 'poll' %} active{% endif %}">Vote</a>
             </li>
+            <li class="nav-item">
+              <a href="{% url 'confhash' %}" class="nav-link{% if request.resolver_match.view_name == 'confhash' %} active{% endif %}">Verify hash</a>
+            </li>
             {% endif %}
             {% if user.is_authenticated and user.role != "NA" %}
             <li class="nav-item">

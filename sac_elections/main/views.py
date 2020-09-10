@@ -121,7 +121,7 @@ def getCandidatesWithVoteCount( user ):
   
   return votes
 
-#get vote count for dashboard
+# get vote count for dashboard
 def getVoteCountCategory( role ):
 
   IMT_CAT = getCategories()['imtech']
@@ -134,6 +134,11 @@ def getVoteCountCategory( role ):
   }
 
   return categories[role]
+
+# gets hash corresponding to a voter and candidate 
+def getHash(voter, candidate):
+  return hashlib.sha256((voter.username + candidate.username + voter.salt).encode()).hexdigest()
+
 
 ## CONTROLLER FUNCTIONS
 
@@ -217,7 +222,6 @@ def callback(request):
 # @login_required(login_url="/")
 def vote(request):
 
-  assertValidTime()
   context = initialize_context(request)
   user = requireValidUser(request)
   url_query = request.GET.get('m')
@@ -248,6 +252,8 @@ def vote(request):
 
 def dashboard(request):
 
+  if checkValidTime() and electionDefined():
+    raise PermissionDenied("Cannot visit before the election is over")
   user = requireValidUser(request)
   if user.role == 'NA':
     return render(request, 'http/401.html', {"message": "You are not authorized to access this page"}, status = 401)
@@ -385,7 +391,6 @@ def confirmation(request, category):
     # return redirect(reverse('vote', kwargs={'m': "done"}))
     return redirect('/vote/?m=done')
 
-
 def manifesto(request, category=None):
 
   if not category:
@@ -415,18 +420,42 @@ def manifesto(request, category=None):
 
 
 def confhash(request):
-  if request.method == 'GET' and request.GET.get('hash', False):
-    hashed = request.GET.get('hash', None)
-    vote  =  Vote.objects.filter(voteHash = hashed)[0] if Vote.objects.filter(voteHash = hashed).count() == 1 else None
+  user = requireValidUser(request)
+  context = initialize_context(request)
+  if request.method == 'POST' and request.POST.get('hash', False):
+    hashed = request.POST.get('hash', None)
+    vote  =  Vote.objects.filter(voteHash = hashed)
+
+    if vote.count() > 1:
+      # multiple votes with same hash were found in db, this is impossible though
+      context['danger'] = "Your vote may have duplicates in the database"
+      return render(request, 'main/hashed.html', context)
+
     if not vote:
-      return HttpResponse("Does not exist")
-    db_hash = hashlib.sha256((vote.voter.username + vote.candidate.username + vote.voter.salt).encode()).hexdigest()
-    return HttpResponse(db_hash +" , "+ str(db_hash == hashed))
+      # if vote hash is not found in db, check if it is valid,
+      candidates = UserProfile.objects.filter(isCandidate = True)
+      for candidate in candidates:
+        if hashed == getHash(user, candidate):
+          context['danger'] = "Your vote may have been deleted from the database"
+          return render(request, 'main/hashed.html', context)
 
-  return render(request, 'main/hashed.html')
+      # invalid hash
+      context['message'] = "The hash you provided is not a valid hash"
+      return render(request, 'main/hashed.html', context)
+
+    # exactly one vote was found
+    vote = vote[0]
+    if hashed == getHash(vote.voter, vote.candidate):
+      context['success']  = "Your vote is unaltered"
+      return render(request, 'main/hashed.html', context)
+
+    context['danger'] = "Your vote may have been altered"
+    return render(request, 'main/hashed.html', context)
+
+  return render(request, 'main/hashed.html', context)
 
 
-# custom errors
+## CUSTOM NON200 RESPONSE HANDLERS
 
 def handler404(request, exception):
     return render(request, 'http/404.html', {'message': 'The requested resource could not be found'}, status=404)
