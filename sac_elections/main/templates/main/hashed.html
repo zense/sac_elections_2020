@@ -1,5 +1,63 @@
-<form method="get" action="/confhash">
-	{% csrf_token %}
-	<input name="hash">
-	<button type="submit">Submit</button>
-</form>
+<!-- <HomeSnippet> -->
+    {% extends "main/layout.html" %}
+    {% block content %}
+    {% load custom_filters %}
+    {% if q %}
+
+    <div class="container" style="margin-bottom: 2%">
+      <div class="card">
+        <div class="card-body col-md-3" style="color: green">{{q}}</div>
+      </div>
+    </div>
+    {% endif %}
+    <div class="jumbotron">
+        <h1>Verify Hash</h1>
+        <h5>Verify your vote hash to make sure that your vote is unaltered</h5>
+        <br>
+        <form action="{% url 'confhash' %}" method="post">
+            {% csrf_token %}
+            <input name="hash" placeholder="Hash" required class="col-md-6" />
+            <br>
+            <button type="submit" class="btn btn-primary btn-md" style="margin-top: 2%">Check</button>
+        </form>
+
+            {% if danger or message or success %}
+            <div class="container" style="margin-top: 4%;">
+              <div class="card">
+                {% if danger %}
+                <div class="card-body" style="color: red">{{danger}}. Please bring this to the attention of the organizers</div>
+                {% elif message %}
+                <div class="card-body" style="color: red">{{message}}</div>
+                {% else %}
+                <div class="card-body" style="color: green">{{success}}</div>
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
+
+          <div style="margin-top: 10%">
+          	<h3>How this works</h3>
+          	<br>
+          	<b>What is a hash?</b>
+          	<p>
+          		Hashes are the output of a hashing algorithms like SHA (Secure Hash Algorithm). These algorithms essentially aim to produce a unique, fixed-length string – the hash value, or “message digest” – for any given piece of data or “message”.
+          	</p>
+          	<p>
+          		Hashes cannot be reversed, so simply knowing the result of a hash from a hashing algorithm does not allow you to reconstruct the contents. What it does allow you to do, however, is determine whether two pieces of data are identical or not without knowing anything about their contents.
+          	</p>
+          	<br>
+          	<b>How does this ensure data integrity?</b>
+          	<p>
+          		When a user votes, the contents of the vote(voter and candidate voted) are hashed along with a randomly generated 8 byte string(called 'salt'). This hash is then given to the user.
+          	</p>
+          	<p>
+          		When the user verifies their hash, a hash is generated on the server side from the contents of the database, if these 2 hashes match(the one with user and the one generated on the server), then the data integrity was maintained. Any change in the database would change the server side hash and invalidate the vote.
+          	</p>
+          	<p>
+          		The hash is also a function of the random salt, hence a user cannot generate a valid hash by themself. And since hashes are irreversible, nobody can tell who the user voted from the hash. Hence maintaining anonymity and data integrity together
+          	</p>
+
+          </div>    
+        </div>
+    {% endblock %}
+    <!-- </HomeSnippet> -->
