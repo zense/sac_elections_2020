@@ -39,7 +39,7 @@
               <a href="{% url 'home' %}" class="nav-link{% if request.resolver_match.view_name == 'home' %} active{% endif %}">Home</a>
             </li>
             <li class="nav-item">
-              <a href="{% url 'manifesto' %}" class="nav-link{% if request.resolver_match.view_name == 'manifesto' %} active{% endif %}">Candidates</a>
+              <a href="{% url 'manifesto' %}" class="nav-link{% if request.resolver_match.view_name == 'manifesto' %} active{% endif %}">Nominees</a>
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">

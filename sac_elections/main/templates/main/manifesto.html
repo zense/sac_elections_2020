@@ -3,86 +3,90 @@
     {% block content %}
     {% load custom_filters %}
 
-    <h1>{{ category|disp }} Candidates</h1>
+    <h1>{{ category|disp }} Nominees</h1>
     <br>
-    {% for candidate, mani in manifestos.items %}
-    {% if mani %}
-      <div class="container">
-        <div class="row no-padding-rl no-padding-top padding-4 border border-left-0 border-right-0">
-          <div class="col-sm-6 col-md-4 col-md-offset-0 xs-margin-8 xs-no-margin-rl xs-no-margin-bottom">
-            <div class="testimonial">
-              <div>
-                <img src="{{mani.image.url}}" width="340" height="450" alt="">
+    {% for gender, manifesto_list in manifestos.items %}
+      <h2>{{ gender|disp_1 }} Nominees</h2>
+      <br>
+      {% for candidate, mani in manifesto_list.items %}
+        {% if mani %}
+          <div class="container">
+            <div class="row no-padding-rl no-padding-top padding-4 border border-left-0 border-right-0">
+              <div class="col-md-6 col-lg-4">
+                <div class="testimonial">
+                  <div>
+                    <img src="{{mani.image.url}}" height="450" alt="">
+                  </div>
+                  <!-- //.bg-white -->
+                </div>
+                <!-- //.testimonial -->
               </div>
-              <!-- //.bg-white -->
-            </div>
-            <!-- //.testimonial -->
-          </div>
-          <div class="col-sm-6 col-md-7">
-            <h3 class="font-family-alt font-weight-700 sm-title-large title-large text-gray-dark-2" style="padding-top: 1%;">
-              <b>{{ mani.candidate.username }}</b>
-            </h3>
-            <h5><b>{{ mani.category|disp }}</b></h5>
-            <div class="row">
-              <div class="col-md-12">
-                <p class="font-family-alt no-margin-bottom no-margin-rl sm-text-large text-extra-large text-gray-dark-2">
-                  <!-- <b>Introduction</b> -->
-                  <!-- <br> -->
-                  {{ mani.intro }}
+              <div class="col-sm-6 col-md-6 col-lg-8">
+                <h3 class="font-family-alt font-weight-700 sm-title-large title-large text-gray-dark-2" style="padding-top: 1%;">
+                  <b>{{ mani.candidate.username }}</b>
+                </h3>
+                <h5><b>{{ mani.category|disp_1 }}</b></h5>
+                <div class="row">
+                  <div class="col-md-12">
+                    <p class="font-family-alt no-margin-bottom no-margin-rl sm-text-large text-extra-large text-gray-dark-2">
+                      <!-- <b>Introduction</b> -->
+                      <!-- <br> -->
+                      {{ mani.intro }}
 
-                </p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <!-- <p class="font-family-alt no-margin-bottom no-margin-rl sm-text-large text-extra-large text-gray-dark-2"> -->
-                  <!-- <b>Agenda</b> -->
-                  <ul>
-                    {% if mani.agenda_1 %}
-                    <li>{{ mani.agenda_1 }}</li>
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <!-- <p class="font-family-alt no-margin-bottom no-margin-rl sm-text-large text-extra-large text-gray-dark-2"> -->
+                      <!-- <b>Agenda</b> -->
+                      <ul>
+                        {% if mani.agenda_1 %}
+                        <li>{{ mani.agenda_1 }}</li>
+                        {% endif %}
+                        {% if mani.agenda_2 %}
+                        <li>{{ mani.agenda_2 }}</li>
+                        {% endif %}
+                        {% if mani.agenda_3 %}
+                        <li>{{ mani.agenda_3 }}</li>
+                        {% endif %}
+                      </ul>
+                    <!-- </p> -->
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <p><b>Email: </b> {{mani.candidate.email}} </p>
+                  </div>
+                  <div class="col-lg-6">
+                    <p><b>Contact Number: </b> {{mani.contact_number}} </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-4">
+                    {% if mani.link_1 %}
+                    <a href="{{ mani.link_1 }}">{{mani.display_1}}</a>
                     {% endif %}
-                    {% if mani.agenda_2 %}
-                    <li>{{ mani.agenda_2 }}</li>
+                  </div>
+                  <div class="col-lg-4">
+                    {% if mani.link_1 %}
+                    <a href="{{ mani.link_2 }}">{{mani.display_2}}</a>
                     {% endif %}
-                    {% if mani.agenda_3 %}
-                    <li>{{ mani.agenda_3 }}</li>
+                  </div>
+                  <div class="col-lg-4">
+                    {% if mani.link_1 %}
+                    <a href="{{ mani.link_3 }}">{{mani.display_3}}</a>
                     {% endif %}
-                  </ul>
-                <!-- </p> -->
+                  </div>
+                </div>
+                <br>
               </div>
             </div>
-            <div class="row">
-              <div class="col-lg-6">
-                <p><b>Email: </b> {{mani.candidate.email}} </p>
-              </div>
-              <div class="col-lg-6">
-                <p><b>Contact Number: </b> {{mani.contact_number}} </p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-4">
-                {% if mani.link_1 %}
-                <a href="{{ mani.link_1 }}">{{mani.display_1}}</a>
-                {% endif %}
-              </div>
-              <div class="col-lg-4">
-                {% if mani.link_1 %}
-                <a href="{{ mani.link_2 }}">{{mani.display_2}}</a>
-                {% endif %}
-              </div>
-              <div class="col-lg-4">
-                {% if mani.link_1 %}
-                <a href="{{ mani.link_3 }}">{{mani.display_3}}</a>
-                {% endif %}
-              </div>
-            </div>
-            <br>
           </div>
-        </div>
-      </div>
-      <br>
-      <br>
-    {%endif%}
+          <br>
+          <br>
+        {%endif%}
+      {% endfor %}
     {% endfor %}
     {% if user.is_authenticated %}
       <a href="{% url 'vote' %}" class="btn btn-primary btn-large col-md-3">Click here to begin voting</a>
