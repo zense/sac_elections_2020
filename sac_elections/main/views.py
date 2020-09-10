@@ -8,9 +8,44 @@ from main.graph_helper import get_user, get_calendar_events
 import dateutil.parser
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 import hashlib
+from django.utils import timezone
 
 
 ## HELPER FUNCTIONS
+
+# check if the election is in progress
+def checkValidTime():
+  election = Election.objects.all()
+  if election:
+    election = election[0]
+    return election.startTime <= timezone.now() and election.endTime > timezone.now()
+
+  return True
+
+# same as above function but raises exception
+def assertValidTime():
+  election = Election.objects.all()
+  if not election:
+    return
+
+  election = election[0]
+  if not (election.startTime <= timezone.now() and election.endTime > timezone.now()):
+    raise PermissionDenied("Election time is up")
+
+# checks if an election model instance is defined
+def electionDefined():
+  if Election.objects.all():
+    return True
+  return False
+
+# gets remaining election time. IMP: Do not use without first checking electionDefined()
+def getRemainingTime():
+  election = Election.objects.all()[0]
+  if checkValidTime():
+    return election.endTime - timezone.now()
+
+  return False
+
 # controller level check for unique voting
 def assertNotVoted(user, category):
   voted = Vote.objects.filter(voter = user, category = category)
@@ -181,6 +216,8 @@ def callback(request):
 
 # @login_required(login_url="/")
 def vote(request):
+
+  assertValidTime()
   context = initialize_context(request)
   user = requireValidUser(request)
   url_query = request.GET.get('m')
@@ -243,6 +280,8 @@ def dashboard(request):
 
 
 def poll(request, category):
+
+  assertValidTime()
   context = initialize_context(request)
   user = requireValidUser(request)
   votable = getVotableHash()
@@ -284,6 +323,8 @@ def poll(request, category):
   return render(request, 'main/poll.html', context)
 
 def confirmation(request, category):
+
+  assertValidTime()
   context = initialize_context(request)
   if request.method != 'POST':
     context['message'] = 'Invalid http method for the resource'
@@ -380,3 +421,11 @@ def confhash(request):
     return HttpResponse(db_hash +" , "+ str(db_hash == hashed))
 
   return render(request, 'main/hashed.html')
+
+
+# custom errors
+
+def handler404(request, exception):
+    return render(request, 'http/404.html', {'message': 'The requested resource could not be found'}, status=404)
+def handler500(request):
+    return render(request, 'http/500.html', status=500)

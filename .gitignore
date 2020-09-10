@@ -2,7 +2,8 @@
 oauth.yml
 docker-compose.yml
 sac_election.env
-settings.py
+sac_elections/sac_elections/settings.py
+sac_elections/main/fixtures/candidates.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -120,5 +121,3 @@ media/
 # **/migrations/**
 # !**/migrations
 # !**/migrations/__init__.py
-sac_elections/main/fixtures/candidates.json
-sac_elections/sac_elections/settings.py
