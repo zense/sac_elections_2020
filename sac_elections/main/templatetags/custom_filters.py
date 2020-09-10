@@ -42,14 +42,14 @@ def getCategoryDisplayNames(value):
 def getCategoryDisplayNames(value):
 
   DISPLAY_NAMES = {
-    'MT2020M1': "Master's Male SAC Nominee",
-    'MT2020M2': "Master's Male SAC Nominee",
-    'MT2020F1': "Master's Female SAC Nominee",
-    'MT2020F2': "Master's Female SAC Nominee",
-    'IMT2019M1': "iMtech 2019 Male SAC Nominee",
-    'IMT2019F1': "iMtech 2019 Female SAC Nominee",
-    'IMT2018M1': "iMtech 2018 Male SAC Nominee",
-    'IMT2018F1': "iMtech 2018 Female SAC Nominee",
+    'MT2020M1': "Master's SAC Nominee",
+    'MT2020M2': "Master's SAC Nominee",
+    'MT2020F1': "Master's SAC Nominee",
+    'MT2020F2': "Master's SAC Nominee",
+    'IMT2019M1': "iMtech 2019 SAC Nominee",
+    'IMT2019F1': "iMtech 2019 SAC Nominee",
+    'IMT2018M1': "iMtech 2018 SAC Nominee",
+    'IMT2018F1': "iMtech 2018 SAC Nominee",
     'F': 'Female',
     'M': 'Male'
   }
