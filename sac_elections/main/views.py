@@ -399,14 +399,17 @@ def manifesto(request, category=None):
   context = initialize_context(request)
   context['category'] = category
   context['manifestos'] = {}
+  context['manifestos']['F'] = {}
+  context['manifestos']['M'] = {}
 
   for cat in categories:
-    candidate_list = UserProfile.objects.filter( batch=cat[:-2], isCandidate = True )
+    gender = cat[-2:-1]
+    candidate_list = UserProfile.objects.filter( batch=cat[:-2], isCandidate = True, gender = gender ).order_by('username')
 
     for cand in candidate_list:
-      context['manifestos'][str(cand)] = Manifesto.objects.filter( candidate=cand ).first()
+      context['manifestos'][str(gender)][str(cand)] = Manifesto.objects.filter( candidate=cand ).first()
 
-  print( context['manifestos'] )
+  # print( context['manifestos'] )
 
   return render( request, 'main/manifesto.html', context)
 

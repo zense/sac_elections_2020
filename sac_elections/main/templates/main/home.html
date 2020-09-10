@@ -41,15 +41,15 @@
             <li class="list-group-item">
               For each vote you cast, you'll receive a hash, keep it with you as a proof of your vote.
             </li>
-            <li class="list-group-item">
+            <!-- <li class="list-group-item">
               Click the button below to signin, you'll be redrected to Microsoft Online Portal to signin.
-            </li>
+            </li> -->
             <li class="list-group-item">
               <b>We don't receive or handle your password.</b>
             </li>
           </ul>
           <br>
-            <a href="{% url 'manifesto' %}{{ user.batch_programme|getslug }}" class="btn btn-primary btn-large col-md-3">Meet the Candidates!</a>
+            <a href="{% url 'manifesto' %}{{ user.batch_programme|getslug }}" class="btn btn-primary btn-large col-md-3">Meet the Nominees!</a>
         {% else %}
           <h1>Welcome to SAC Elections 2020!</h1>
           <!-- <br> -->
@@ -83,7 +83,7 @@
           <br>
           <!-- <h4>Please sign in with your IIITB email id to continue.</h4> -->
           <a href="{% url 'signin' %}" class="btn btn-primary btn-large col-lg-3 col-md-6" style="margin-top: 1%">Click here to sign in</a>
-          <a href="{% url 'manifesto' %}{{ user.batch_programme|getslug }}" class="btn btn-primary btn-large col-lg-3 col-md-6" style="margin-top: 1%">Meet the Candidates!</a>
+          <a href="{% url 'manifesto' %}{{ user.batch_programme|getslug }}" class="btn btn-primary btn-large col-lg-3 col-md-6" style="margin-top: 1%">Meet the Nominees!</a>
         {% endif %}
       </div>
     </div>
