@@ -3,6 +3,7 @@
     {% block content %}
     {% load custom_filters %}
     {% if q %}
+
     <div class="container" style="margin-bottom: 2%">
       <div class="card">
         <div class="card-body col-md-3" style="color: green">{{q}}</div>
@@ -20,7 +21,7 @@
             {% if batch in voted_cats %}
               <span class="list-group-item list-group-item-success">
                 {{batch|disp}}
-                <font style="float: right; color: green">{{batch|add:"@#@"|add:hashes|gethash}}</font>
+                <font id="hashLabel" style="float: right; color: green; overflow-wrap: anywhere;" onclick="cpyHash();">{{batch|add:"@#@"|add:hashes|gethash}}</font>
               </span>
               {% else %}
               <a href="/vote/{{batch}}" class="list-group-item">
@@ -37,5 +38,16 @@
         <a href="{% url 'signin' %}" class="btn btn-primary btn-large">Click here to sign in</a>
       {% endif %}
     </div>
+    <script>
+      async function cpyHash() {
+        var textArea = document.createElement("textarea");
+        document.body.appendChild(textArea);
+        textArea.value = document.getElementById("hashLabel").textContent
+        textArea.select();
+        document.execCommand("Copy");
+        textArea.remove();
+        alert("Hash copied to clipboard");
+      }
+    </script>
     {% endblock %}
     <!-- </HomeSnippet> -->
