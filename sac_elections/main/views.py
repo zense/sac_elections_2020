@@ -421,3 +421,11 @@ def confhash(request):
     return HttpResponse(db_hash +" , "+ str(db_hash == hashed))
 
   return render(request, 'main/hashed.html')
+
+
+# custom errors
+
+def handler404(request, exception):
+    return render(request, 'http/404.html', {'message': 'The requested resource could not be found'}, status=404)
+def handler500(request):
+    return render(request, 'http/500.html', status=500)
