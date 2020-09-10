@@ -222,7 +222,6 @@ def callback(request):
 # @login_required(login_url="/")
 def vote(request):
 
-  assertValidTime()
   context = initialize_context(request)
   user = requireValidUser(request)
   url_query = request.GET.get('m')
@@ -253,6 +252,8 @@ def vote(request):
 
 def dashboard(request):
 
+  if checkValidTime() and electionDefined():
+    raise PermissionDenied("Cannot visit before the election is over")
   user = requireValidUser(request)
   if user.role == 'NA':
     return render(request, 'http/401.html', {"message": "You are not authorized to access this page"}, status = 401)
