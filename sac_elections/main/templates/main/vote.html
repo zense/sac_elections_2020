@@ -22,7 +22,7 @@
             {% if batch in voted_cats %}
               <span class="list-group-item list-group-item-success">
                 {{batch|disp}}
-                <font id="hashLabel" style="float: right; color: green; overflow-wrap: anywhere;" onclick="cpyHash();">{{batch|add:"@#@"|add:hashes|gethash}}</font>
+                <font id="hashLabel" style="float: right; color: green; overflow-wrap: anywhere;" onclick="cpyHash(this);">{{batch|add:"@#@"|add:hashes|gethash}}</font>
               </span>
               {% else %}
               <a href="/vote/{{batch}}" class="list-group-item">
@@ -40,10 +40,10 @@
       {% endif %}
     </div>
     <script>
-      async function cpyHash() {
+      async function cpyHash(element) {
         var textArea = document.createElement("textarea");
         document.body.appendChild(textArea);
-        textArea.value = document.getElementById("hashLabel").textContent
+        textArea.value = element.textContent
         textArea.select();
         document.execCommand("Copy");
         textArea.remove();
