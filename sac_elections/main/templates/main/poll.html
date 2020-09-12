@@ -1,0 +1,54 @@
+<!-- <HomeSnippet> -->
+    {% extends "main/layout.html" %}
+    {% block content %}
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Nominees</h1>
+        {% load custom_filters %}
+        <p>For <b>{{category|disp}}</b></p>
+        <ul class="list-group">
+          {% for candidate in candidates %}
+            <li class="list-group-item">
+              <input type="radio" name="candidate" value="{{candidate.email}}" id="candidate" onchange="radioOnChange()">
+              <label for="{{candidate}}">
+              </label>
+              {{candidate}}
+            </li>
+          {% endfor %}
+          <form method="post" action="confirmation" id="pollform">
+            {% csrf_token %}
+            <input type="hidden" name="vote" id="votehfield" value="">
+            <a href="{% url 'vote' %}" class="btn btn-secondary btn-small col-lg-2 float-bottom" style="margin-top: 2%;">Back</a>
+            <!-- <input type="button" value="Back" class="btn btn-secondary btn-small col-lg-2 float-bottom" style="margin-top: 2%" onclick="history.back(-1)"/> -->
+            <input type="button" id="submitVote" onclick="getval()" class="btn btn-primary btn-large col-lg-2" style="margin-top: 2%" value="Next">
+          </form>
+        </ul>
+      </div>
+
+          <script type="text/javascript">
+
+            getval = () => {
+              var candidate = document.querySelector('input[name = "candidate"]:checked').value;
+              document.getElementById('votehfield').value = candidate;
+              document.getElementById('pollform').submit();
+            }
+
+            var button = document.getElementById('submitVote');
+
+            var radios = document.getElementsByName('candidate');
+
+            radioOnChange =  () => {
+              if(!document.querySelector('input[name = "candidate"]:checked')){
+                button.disabled = true;
+              }
+              else{
+                button.disabled = false;
+              }
+            };
+            if(!document.querySelector('input[name = "candidate"]:checked')){
+                button.disabled = true;
+              }
+          </script>
+
+    {% endblock %}
+    <!-- </HomeSnippet> -->

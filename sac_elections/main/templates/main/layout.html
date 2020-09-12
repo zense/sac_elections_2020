@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177537611-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-177537611-1');
+    </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+    <title>SAC Elections 2020</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto" rel="stylesheet"> 
+    {% load static %}
+    {% load custom_filters %}
+    <link rel="stylesheet" type="text/css" href="{% static "main/style.css" %}">
+    <link rel="stylesheet" href="{% static "main/app.css" %}">
+  </head>
+
+  <!-- <body background="https://images.shiksha.com/mediadata/images/1533799954phpG6QuDa.jpeg" style="background-size: cover"> -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+      <div class="container">
+        <div class=""><a href="{% url 'home' %}" class=" font-weight-bold navbar-brand">SAC Elections 2020</a></div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a href="{% url 'home' %}" class="nav-link{% if request.resolver_match.view_name == 'home' %} active{% endif %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'manifesto' %}" class="nav-link{% if request.resolver_match.view_name == 'manifesto' %} active{% endif %}">Nominees</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a href="{% url 'vote' %}" class="nav-link{% if request.resolver_match.view_name == 'vote' %} active{% endif %} nav-link{% if request.resolver_match.view_name == 'confirmation' %} active{% endif %} nav-link{% if request.resolver_match.view_name == 'poll' %} active{% endif %}">Vote</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'confhash' %}" class="nav-link{% if request.resolver_match.view_name == 'confhash' %} active{% endif %}">Verify hash</a>
+            </li>
+            {% endif %}
+            {% if user.is_authenticated and user.role != "NA" %}
+            <li class="nav-item">
+              <a href="{% url 'dashboard' %}" class="nav-link{% if request.resolver_match.view_name == 'dashboard' %} active{% endif %}">Dashboard</a>
+            </li>
+            {% endif %}
+          </ul>
+          <ul class="navbar-nav justify-content-end">
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <span class="nav-link disabled">Logged in as {{ user.name }}</span>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'signout' %}" class="nav-link">Sign Out</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a href="{% url 'signin' %}" class="nav-link">Sign In</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <main role="main" class="container">
+      {% if errors %}
+        {% for error in errors %}
+          <div class="alert alert-danger" role="alert">
+            <p class="mb-3">{{ error.message }}</p>
+            {% if error.debug %}
+              <pre class="alert-pre border bg-light p-2"><code>{{ error.debug }}</code></pre>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"></script>
+  </body>
+  <footer class="page-footer">
+    <div class="footer-copyright text-center py-3">© <a href="https://zense.co.in">Zense</a> 2020. All rights reserved.
+    </div>
+  </footer>
+</html>

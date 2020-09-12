@@ -1,3 +1,10 @@
+#config files
+oauth.yml
+docker-compose.yml
+sac_election.env
+sac_elections/sac_elections/settings.py
+sac_elections/main/fixtures/candidates.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -81,6 +88,7 @@ celerybeat-schedule
 
 # dotenv
 .env
+sac_election.env
 
 # virtualenv
 .venv

@@ -1,0 +1,25 @@
+<!-- <HomeSnippet> -->
+    {% extends "main/layout.html" %}
+    {% block content %}
+    <div>
+      <h1 class="align-center">Dashboard</h1>
+      <!-- <ul class="list-group"> -->
+          {% load custom_filters %}
+          {% for batch, candidates in votes.items %}
+          <!-- <li class="list-group"> -->
+            <!-- <li class="list-group-item d-flex justify-content-between align-items-center"> -->
+              <h4>{{batch|disp}}</h4>
+              <ul class="list-group">
+                {% for name, votes in candidates.items %}
+                <li class="list-group-item d-flex justify-content-between col-lg-4">
+                  {{name}}<span class="badge badge-primary badge">{{votes}}</span>
+                </li>
+                {% endfor %}
+              </ul>
+              <br>
+          <!-- </li> -->
+          {% endfor %}
+      <!-- </ul> -->
+    </div>
+    {% endblock %}
+    <!-- </HomeSnippet> -->
