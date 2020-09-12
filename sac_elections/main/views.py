@@ -29,7 +29,9 @@ def assertValidTime():
     return
 
   election = election[0]
-  if not (election.startTime <= timezone.now() and election.endTime > timezone.now()):
+  if not election.startTime <= timezone.now():
+    raise PermissionDenied("Election has not begun yet ")
+  if not election.endTime >= timezone.now():
     raise PermissionDenied("Election time is up")
 
 # checks if an election model instance is defined
