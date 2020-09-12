@@ -3,8 +3,8 @@
     {% block content %}
     <div class="jumbotron">
       <h1>500 Internal Server Error </h1>
-      <p> The server ecountered an error while processing your request </p>
-      <a class="btn btn-secondary btn-small" href="javascript:history.back(1)" >Back</a>
+      <p> The server ecountered an error while processing your request.</p>
+      <a class="btn btn-secondary btn-small" href="{% url 'home' %}" >Go to Home</a>
     </div>
     {% endblock %}
     <!-- </HomeSnippet> -->

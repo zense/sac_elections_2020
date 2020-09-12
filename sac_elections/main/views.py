@@ -147,7 +147,13 @@ def getHash(voter, candidate):
 # <HomeViewSnippet>
 def home(request):
   message = request.GET.get('m', None)
-  context = initialize_context(request)
+  context = {}
+  try:
+    context = initialize_context(request)
+  except:
+    remove_user_and_token(request)
+    return redirect(reverse(home))
+
   context['q'] = "Invalid email id, please use your IIITB email to sign in" if message == "invalid" else None
   return render(request, 'main/home.html', context)
 # </HomeViewSnippet>
@@ -167,6 +173,7 @@ def initialize_context(request):
   # context['user'] = request.session.get('user', {'is_authenticated': False})
   if request.session.get('user', False):
     user = UserProfile.objects.get(id = request.session['user']['uid'])
+
     context['user'] = {
       'name': " ".join(user.username.split(" ")[1:]),
       'rollno': user.username.split(" ")[0],
