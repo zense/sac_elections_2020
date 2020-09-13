@@ -15,7 +15,7 @@ App to facilitate SAC elections. Ensures databse integrity through hashing.
   ```
   cp sac_elections/sac_elections/settings.py.example sac_elections/sac_elections/settings.py
   ```
-  4. Change the credentials (such as app_secret) in the file
+  4. Change the credentials (such as app_secret) in the file. Make sure to match DB credentials to those set in the docker-compose.yml 
   5. Copy nginx config file
   ```
   cp production/nginx/sac_elections.conf.example production/nginx/sac_elections.conf
@@ -35,17 +35,15 @@ App to facilitate SAC elections. Ensures databse integrity through hashing.
   ```
   cp docker-compose.yml.example docker-compose.yml
   ```
-  2. Change the docker-compose.yml file and change credentials
-  3. Copy settings.py file
+  2. Copy settings.py file
   ```
   cp sac_elections/sac_elections/settings.py.example sac_elections/sac_elections/settings.py
   ```
-  4. Change the credentials (such as app_secret) in the file
-  5. Run command
+  3. Run command
   ```
   docker-compose build
   ```
-  6. Run command
+  4. Run command
   ```
   docker-compose up
   ```
